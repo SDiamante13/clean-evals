@@ -1,0 +1,27 @@
+# Ralph Progress — agent-eval
+# Branch: ralph/agent-eval-library
+# Started: 2026-01-30
+
+## Codebase Patterns
+- Use `createTestTracer()` for isolated per-test OpenTelemetry spans
+- Export types separately with `export type` from index.ts
+- Span attribute keys: generic (`tool.name`, `tool.arguments`), OpenAI (`gen_ai.request.function_call.*`), LLM (`llm.function_call.*`)
+- Run quality checks: `./node_modules/.bin/tsc --noEmit` and `./node_modules/.bin/vitest run`
+- Must `npm install` first — node_modules not committed
+- Ralph files are in `scripts/ralph/`, not `ralph/`
+
+---
+
+## 2026-01-30 - US-001 & US-002
+- Already implemented in prior commits
+- Marked as passing
+---
+
+## 2026-01-30 - US-003
+- Implemented `findToolCalls(spans)` in `src/find-tool-calls.ts`
+- Extracts tool name and args from spans using multiple attribute key conventions
+- Files changed: `src/find-tool-calls.ts`, `src/find-tool-calls.test.ts`, `src/index.ts`, `scripts/ralph/prd.json`
+- **Learnings for future iterations:**
+  - OpenTelemetry spans use `ReadableSpan` from `@opentelemetry/sdk-trace-base`
+  - Attribute values can be string, number, boolean, or arrays — always parse JSON strings for args
+---
