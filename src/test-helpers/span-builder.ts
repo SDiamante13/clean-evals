@@ -5,10 +5,12 @@ interface SpanBuilderOptions {
   toolName?: string;
   args?: Record<string, unknown>;
   attrPrefix?: 'tool' | 'gen_ai' | 'llm';
+  startTimeMs?: number;
+  result?: string;
 }
 
 export function buildToolSpan(options: SpanBuilderOptions = {}): ReadableSpan {
-  const { toolName = 'test-tool', args, attrPrefix = 'tool' } = options;
+  const { toolName = 'test-tool', args, attrPrefix = 'tool', startTimeMs, result } = options;
   const attributes: Record<string, string> = {};
 
   const nameKey = getNameKey(attrPrefix);
@@ -18,8 +20,11 @@ export function buildToolSpan(options: SpanBuilderOptions = {}): ReadableSpan {
   if (args !== undefined) {
     attributes[argsKey] = JSON.stringify(args);
   }
+  if (result !== undefined) {
+    attributes['tool.result'] = result;
+  }
 
-  return createFakeSpan(attributes);
+  return createFakeSpan(attributes, startTimeMs);
 }
 
 function getNameKey(prefix: string): string {
@@ -34,8 +39,8 @@ function getArgsKey(prefix: string): string {
   return 'tool.arguments';
 }
 
-function createFakeSpan(attributes: Record<string, string>): ReadableSpan {
-  const now = Date.now();
+function createFakeSpan(attributes: Record<string, string>, startTimeMs?: number): ReadableSpan {
+  const now = startTimeMs ?? Date.now();
   return {
     name: 'test-span',
     kind: SpanKind.INTERNAL,

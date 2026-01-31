@@ -15,10 +15,7 @@ interface MatcherResult {
 
 const DEFAULT_PASS_THRESHOLD = 0.7;
 
-export async function toPassEval(
-  output: string,
-  options: PassEvalOptions,
-): Promise<MatcherResult> {
+export async function toPassEval(output: string, options: PassEvalOptions): Promise<MatcherResult> {
   const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
   const result = await evaluateOutput({
     output,

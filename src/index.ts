@@ -15,6 +15,7 @@ export type { AnthropicJudgeOptions } from './judges/anthropic-judge-provider.js
 export { OllamaJudgeProvider } from './judges/ollama-judge-provider.js';
 export type { OllamaJudgeOptions } from './judges/ollama-judge-provider.js';
 export { evaluateOutput } from './evaluate-output.js';
+export { distillTrace } from './distill-trace.js';
 export type { EvaluateOutputOptions, OutputEvalResult } from './evaluate-output.js';
 export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';
