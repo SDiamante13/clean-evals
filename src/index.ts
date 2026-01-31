@@ -25,3 +25,4 @@ export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';
 export { runWithSamples } from './run-with-samples.js';
 export type { SamplesConfig, SampledResult } from './run-with-samples.js';
+export { setupAgentEval } from './setup-agent-eval.js';
