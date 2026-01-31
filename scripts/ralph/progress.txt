@@ -275,3 +275,16 @@
   - Guardrail matcher is synchronous (no async needed) since guardrails are pure functions
   - Matcher formats results as `PASS/FAIL name: reason` with indentation
 ---
+
+## 2026-01-31 - US-023
+- dumpFailures() already implemented in prior commit (72af168)
+- Filters results where pass === false, writes pretty-printed JSON
+- Types: FailureEntry, DumpFailuresOptions, EvalResult union
+- Files: src/dump-failures.ts, src/dump-failures.test.ts, src/index.ts
+- Verified: lint, typecheck, and all 117 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - dumpFailures uses writeFileSync from node:fs — tests mock with vi.mock('node:fs')
+  - EvalResult is union of OutputEvalResult | TraceEvalResult | HybridEvalResult
+  - Default output path: ./eval-failures.json
+---
