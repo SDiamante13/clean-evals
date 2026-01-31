@@ -4,6 +4,8 @@ export type { ToolCall } from './find-tool-calls.js';
 export { evaluateTrace } from './evaluate-trace.js';
 export type { ExpectedCall, TraceEvalResult } from './evaluate-trace.js';
 export { toPassTraceEval } from './matchers/to-pass-trace-eval.js';
+export { toPassEval } from './matchers/to-pass-eval.js';
+export type { PassEvalOptions } from './matchers/to-pass-eval.js';
 export type {} from './matchers/types.js';
 export type { JudgeProvider, JudgeResult } from './judges/judge-provider.js';
 export { OpenAIJudgeProvider } from './judges/openai-judge-provider.js';
@@ -13,9 +15,6 @@ export type { AnthropicJudgeOptions } from './judges/anthropic-judge-provider.js
 export { OllamaJudgeProvider } from './judges/ollama-judge-provider.js';
 export type { OllamaJudgeOptions } from './judges/ollama-judge-provider.js';
 export { evaluateOutput } from './evaluate-output.js';
-export type {
-  EvaluateOutputOptions,
-  OutputEvalResult,
-} from './evaluate-output.js';
+export type { EvaluateOutputOptions, OutputEvalResult } from './evaluate-output.js';
 export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';
