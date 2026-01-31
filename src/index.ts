@@ -20,7 +20,7 @@ export type { OllamaJudgeOptions } from './judges/ollama-judge-provider.js';
 export { evaluateOutput } from './evaluate-output.js';
 export { evaluateHybrid } from './evaluate-hybrid.js';
 export { distillTrace } from './distill-trace.js';
-export type { EvaluateOutputOptions, OutputEvalResult } from './evaluate-output.js';
+export type { EvaluateOutputOptions, OutputEvalResult, Criterion, CriterionResult } from './evaluate-output.js';
 export type { EvaluateHybridOptions, HybridEvalResult } from './evaluate-hybrid.js';
 export { DETERMINISTIC_PASS_THRESHOLD, LLM_PASS_THRESHOLD, DEFAULT_WARN_THRESHOLD } from './defaults.js';
 export { runWithSamples } from './run-with-samples.js';
