@@ -44,11 +44,12 @@ function buildEvalOptions(output: string, options: PassEvalOptions, passThreshol
   return { output, rubric: options.rubric!, judge: options.judge, passThreshold };
 }
 
-function formatCriteriaMessage(result: { pass: boolean; score: number; reasoning: string; criteriaResults?: { name: string; pass: boolean; reasoning: string }[] }, passThreshold: number): string {
+function formatCriteriaMessage(
+  result: { pass: boolean; score: number; reasoning: string; criteriaResults?: { name: string; pass: boolean; reasoning: string }[] },
+  passThreshold: number
+): string {
   const criteriaResults = result.criteriaResults ?? [];
-  const lines = criteriaResults.map(
-    (cr) => `  ${cr.pass ? 'PASS' : 'FAIL'} ${cr.name}: ${cr.reasoning}`
-  );
+  const lines = criteriaResults.map((cr) => `  ${cr.pass ? 'PASS' : 'FAIL'} ${cr.name}: ${cr.reasoning}`);
 
   if (result.pass) {
     return `Expected output NOT to pass eval\nAll criteria passed:\n${lines.join('\n')}`;

@@ -2,7 +2,7 @@ export { createTestTracer } from './tracer.js';
 export { findToolCalls } from './find-tool-calls.js';
 export type { ToolCall } from './find-tool-calls.js';
 export { evaluateTrace } from './evaluate-trace.js';
-export type { ExpectedCall, TraceEvalResult } from './evaluate-trace.js';
+export type { ExpectedCall, TraceEvalResult, FirstFailure } from './evaluate-trace.js';
 export { toPassTraceEval } from './matchers/to-pass-trace-eval.js';
 export type { TraceEvalOptions } from './matchers/to-pass-trace-eval.js';
 export { toPassEval } from './matchers/to-pass-eval.js';

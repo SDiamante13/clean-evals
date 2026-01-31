@@ -1,5 +1,5 @@
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
-import { evaluateTrace, ExpectedCall } from './evaluate-trace.js';
+import { evaluateTrace, ExpectedCall, FirstFailure } from './evaluate-trace.js';
 import { evaluateOutput, OutputEvalResult } from './evaluate-output.js';
 import type { JudgeProvider } from './judges/judge-provider.js';
 
@@ -19,6 +19,8 @@ export interface HybridEvalResult {
   llmResult?: OutputEvalResult;
   details: string[];
   skippedLlm: boolean;
+  firstFailureIndex: number | null;
+  firstFailure: FirstFailure | null;
 }
 
 /**
@@ -53,6 +55,8 @@ export async function evaluateHybrid(options: EvaluateHybridOptions): Promise<Hy
       deterministicScore: traceResult.score,
       details: [...traceResult.details, 'LLM judge skipped: deterministic check failed'],
       skippedLlm: true,
+      firstFailureIndex: traceResult.firstFailureIndex,
+      firstFailure: traceResult.firstFailure,
     };
   }
 
@@ -64,5 +68,7 @@ export async function evaluateHybrid(options: EvaluateHybridOptions): Promise<Hy
     llmResult,
     details: [...traceResult.details, `LLM judge score: ${llmResult.score}`],
     skippedLlm: false,
+    firstFailureIndex: null,
+    firstFailure: null,
   };
 }

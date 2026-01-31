@@ -82,4 +82,50 @@ describe('evaluateTrace', () => {
     expect(result.pass).toBe(true);
     expect(result.score).toBe(1.0);
   });
+
+  describe('firstFailure diagnostics', () => {
+    it('returns null when all expected calls match', () => {
+      const spans = [buildToolSpan({ toolName: 'search', args: { q: 'test' } })];
+      const result = evaluateTrace({ spans, expected: [{ toolName: 'search', args: { q: 'test' } }] });
+
+      expect(result.firstFailureIndex).toBeNull();
+      expect(result.firstFailure).toBeNull();
+    });
+
+    it('returns index 0 when first step fails', () => {
+      const spans = [buildToolSpan({ toolName: 'wrong_tool' })];
+      const result = evaluateTrace({ spans, expected: [{ toolName: 'search' }, { toolName: 'summarize' }] });
+
+      expect(result.firstFailureIndex).toBe(0);
+      expect(result.firstFailure?.expected.toolName).toBe('search');
+      expect(result.firstFailure?.actual?.toolName).toBe('wrong_tool');
+    });
+
+    it('returns mid-step failure index', () => {
+      const spans = [
+        buildToolSpan({ toolName: 'search' }),
+        buildToolSpan({ toolName: 'wrong_tool' }),
+      ];
+      const result = evaluateTrace({
+        spans,
+        expected: [{ toolName: 'search' }, { toolName: 'summarize' }, { toolName: 'write' }],
+      });
+
+      expect(result.firstFailureIndex).toBe(1);
+      expect(result.firstFailure?.expected.toolName).toBe('summarize');
+      expect(result.firstFailure?.actual?.toolName).toBe('wrong_tool');
+    });
+
+    it('returns null actual when agent stopped early', () => {
+      const spans = [buildToolSpan({ toolName: 'search' })];
+      const result = evaluateTrace({
+        spans,
+        expected: [{ toolName: 'search' }, { toolName: 'summarize' }, { toolName: 'write' }],
+      });
+
+      expect(result.firstFailureIndex).toBe(1);
+      expect(result.firstFailure?.expected.toolName).toBe('summarize');
+      expect(result.firstFailure?.actual).toBeNull();
+    });
+  });
 });

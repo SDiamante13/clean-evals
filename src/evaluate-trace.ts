@@ -10,16 +10,25 @@ export interface ExpectedCall {
   args?: Record<string, unknown>;
 }
 
+export interface FirstFailure {
+  expected: ExpectedCall;
+  actual: ToolCall | null;
+}
+
 /**
  * Result of a deterministic trace evaluation.
  *
  * - `score` ranges from 0.0 (no matches) to 1.0 (all expected calls found).
  * - `details` contains a per-expectation breakdown of matches and mismatches.
+ * - `firstFailureIndex` is the 0-based index of the first unmatched expected call, or null if all matched.
+ * - `firstFailure` provides the expected and actual call at the first failure point.
  */
 export interface TraceEvalResult {
   pass: boolean;
   score: number;
   details: string[];
+  firstFailureIndex: number | null;
+  firstFailure: FirstFailure | null;
 }
 
 /**
@@ -45,19 +54,26 @@ export function evaluateTrace(params: { spans: ReadableSpan[]; expected: Expecte
   const actual = findToolCalls(spans);
   const details: string[] = [];
   let matched = 0;
+  let firstFailureIndex: number | null = null;
+  let firstFailure: FirstFailure | null = null;
 
-  for (const expectedCall of expected) {
+  for (let i = 0; i < expected.length; i++) {
+    const expectedCall = expected[i];
     const match = findMatch(actual, expectedCall);
     if (match) {
       matched++;
       details.push(`✓ ${expectedCall.toolName} matched`);
     } else {
       details.push(buildMismatchDetail(expectedCall, actual));
+      if (firstFailureIndex === null) {
+        firstFailureIndex = i;
+        firstFailure = { expected: expectedCall, actual: actual[i] ?? null };
+      }
     }
   }
 
   const score = expected.length === 0 ? 1.0 : matched / expected.length;
-  return { pass: score === 1.0, score, details };
+  return { pass: score === 1.0, score, details, firstFailureIndex, firstFailure };
 }
 
 function findMatch(actual: ToolCall[], expected: ExpectedCall): boolean {

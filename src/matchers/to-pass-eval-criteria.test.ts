@@ -36,9 +36,7 @@ describe('toPassEval with criteria', () => {
     const judge: JudgeProvider = {
       judge: vi.fn().mockImplementation(async () => {
         callCount++;
-        return callCount === 1
-          ? { score: 0.8, reasoning: 'Accurate' }
-          : { score: 0.2, reasoning: 'Incomplete' };
+        return callCount === 1 ? { score: 0.8, reasoning: 'Accurate' } : { score: 0.2, reasoning: 'Incomplete' };
       }),
     };
 
@@ -58,9 +56,7 @@ describe('toPassEval with criteria', () => {
     const judge: JudgeProvider = {
       judge: vi.fn().mockImplementation(async () => {
         callCount++;
-        return callCount === 1
-          ? { score: 0.8, reasoning: 'Looks accurate' }
-          : { score: 0.2, reasoning: 'Missing details' };
+        return callCount === 1 ? { score: 0.8, reasoning: 'Looks accurate' } : { score: 0.2, reasoning: 'Missing details' };
       }),
     };
 

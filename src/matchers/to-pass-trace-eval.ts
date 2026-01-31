@@ -1,5 +1,5 @@
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
-import { evaluateTrace, ExpectedCall } from '../evaluate-trace.js';
+import { evaluateTrace, ExpectedCall, TraceEvalResult } from '../evaluate-trace.js';
 import { distillTrace } from '../distill-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
 import { runWithSamples } from '../run-with-samples.js';
@@ -46,7 +46,7 @@ async function runSingle(
   const deterministicPass = deterministicResult.score >= passThreshold;
 
   if (!options.judge || !options.rubric) {
-    return buildResult(deterministicPass, deterministicResult.score, passThreshold, deterministicResult.details);
+    return buildResult(deterministicPass, deterministicResult.score, passThreshold, deterministicResult.details, deterministicResult);
   }
 
   const story = distillTrace(spans);
@@ -85,13 +85,20 @@ function logWarningIfNeeded(score: number, warnThreshold: number, passThreshold:
   }
 }
 
-function buildResult(pass: boolean, score: number, passThreshold: number, details: string[]): MatcherResult {
+function formatFirstFailure(result: TraceEvalResult): string {
+  if (result.firstFailure === null) return '';
+  const { expected, actual } = result.firstFailure;
+  const actualStr = actual ? `${actual.toolName}(${JSON.stringify(actual.args ?? {})})` : '(agent stopped early)';
+  return `\nFirst failure at step ${result.firstFailureIndex}: expected ${expected.toolName} but got ${actualStr}`;
+}
+
+function buildResult(pass: boolean, score: number, passThreshold: number, details: string[], result: TraceEvalResult): MatcherResult {
   return {
     pass,
     message: (): string =>
       pass
         ? `Expected trace NOT to pass eval but got score ${score}\n${details.join('\n')}`
-        : `Expected trace to pass eval (threshold: ${passThreshold}) but got score ${score}\n${details.join('\n')}`,
+        : `Expected trace to pass eval (threshold: ${passThreshold}) but got score ${score}${formatFirstFailure(result)}\n${details.join('\n')}`,
   };
 }
 
