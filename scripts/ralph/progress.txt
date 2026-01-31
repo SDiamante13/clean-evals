@@ -50,3 +50,13 @@
   - Type augmentation for Vitest matchers goes in `src/matchers/types.ts` using `declare module 'vitest'`
   - `buildToolSpan()` from test-helpers used for all matcher tests
 ---
+## 2026-01-31 - US-006
+- Implemented JudgeProvider interface and OpenAIJudgeProvider
+- System prompt instructs LLM to return JSON { score, reasoning }
+- Integration test with mocked HTTP confirms correct prompt construction and response parsing
+- Files changed: src/judges/*.ts (interface, provider, system-prompt, parse-judge-response, index), src/index.ts
+- **Learnings for future iterations:**
+  - JudgeProvider interface defined in judge-provider.ts with judge(prompt): Promise<JudgeResult>
+  - parseJudgeResponse() extracts JSON from surrounding text, validates score and reasoning fields
+  - All judge providers share the same JUDGE_SYSTEM_PROMPT from system-prompt.ts
+---
