@@ -144,3 +144,15 @@
   - Result includes `skippedLlm` boolean and optional `llmResult`
   - Test pattern: verify `judge.judge` was `not.toHaveBeenCalled()` when deterministic fails
 ---
+
+## 2026-01-31 - US-014
+- Already implemented in prior commit (08b6a2c)
+- `toPassHybridEval()` matcher in `src/matchers/to-pass-hybrid-eval.ts`
+- Registered in register.ts, types in types.ts, exported from index.ts
+- Verified: lint, typecheck, and all 68 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - `toPassHybridEval` composes `evaluateHybrid` internally
+  - Fail-fast: when deterministic check fails, message shows "LLM judge was skipped"
+  - Builder function `buildFakeJudge(result)` used for all judge test doubles
+---
