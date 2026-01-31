@@ -433,7 +433,7 @@
         "Tests pass"
       ],
       "priority": 26,
-      "passes": false,
+      "passes": true,
       "notes": "Depends on US-020 for firstFailureIndex"
     }
   ]

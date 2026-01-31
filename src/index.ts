@@ -33,3 +33,5 @@ export { dumpFailures } from './dump-failures.js';
 export type { FailureEntry, DumpFailuresOptions, EvalResult } from './dump-failures.js';
 export { wilsonInterval } from './wilson-interval.js';
 export type { ConfidenceInterval } from './wilson-interval.js';
+export { buildFailureMatrix, FailureMatrix } from './failure-matrix.js';
+export type { FailureMatrixInput } from './failure-matrix.js';

@@ -319,3 +319,19 @@
   - Edge case: 0 trials returns { lower: 0, upper: 0 }
   - CI formatting: `${level*100}% CI: ${lower}–${upper}` with en-dash
 ---
+
+## 2026-01-31 - US-026
+- Implemented buildFailureMatrix() in src/failure-matrix.ts
+- Analyzes which tool-call transitions fail most often across multiple trace evals
+- FailureMatrix class with matrix Map, hotspots() sorted by failure rate, summary() string
+- Uses firstFailureIndex from TraceEvalResult to identify failure point
+- First step failures use '(start)' as 'from' key
+- 6 tests in failure-matrix.test.ts covering no failures, first-step, mid-sequence, sorting, formatting, empty input
+- Files changed: src/failure-matrix.ts, src/failure-matrix.test.ts, src/index.ts
+- Verified: lint, typecheck, and all 137 tests pass
+- **Learnings for future iterations:**
+  - Failure matrix uses Map<string, TransitionStats> with key format `${from} → ${to}`
+  - TransitionStats tracks failures, total, and rate (failures/total)
+  - hotspots() filters entries with failures > 0 and sorts descending by rate
+  - summary() formats as: `transition: failures/total failed (pct%)`
+---

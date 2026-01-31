@@ -32,8 +32,14 @@ vi.mock('openai', () => {
 When running as Ralph agent:
 1. Commit after each story using `/commit` skill
 2. Update PRD `passes: true`
-3. Append progress.txt
+3. Append progress.txt with **Learnings for future iterations** section documenting reusable patterns, gotchas, and useful context
 4. Invoke `/remember` and immediately apply useful suggestions to CLAUDE.md without asking permission
+
+**Autonomous mode**: Ralph runs unattended with no human interaction. Never ask questions, never ask for permission, make decisions autonomously.
+
+**Already-implemented stories**: When a US has `passes: false` but code exists, verify quality checks pass, update PRD to `passes: true`, append progress, commit as metadata-only update.
+
+**Completion check**: After committing a story, run `grep -c '"passes": false' scripts/ralph/prd.json`. If count is 0, all stories are done — reply with `<promise>COMPLETE</promise>`.
 
 ## Pre-commit Hooks
 
@@ -42,9 +48,11 @@ The codebase uses husky with prettier and eslint pre-commit hooks. These run aut
 ## Quality Checks
 
 Run three checks before committing (all must pass with zero errors):
-1. `./node_modules/.bin/tsc --noEmit` - typecheck
-2. `npm run lint` - eslint
-3. `./node_modules/.bin/vitest run` - tests
+1. `npm run lint` - eslint (catches formatting and complexity issues)
+2. `./node_modules/.bin/tsc --noEmit` - typecheck (validates types after lint fixes)
+3. `./node_modules/.bin/vitest run` - tests (validates behavior)
+
+Execute in this exact order. Fix all errors at each step before proceeding to the next.
 
 ## Codebase Patterns
 
@@ -62,6 +70,9 @@ Run three checks before committing (all must pass with zero errors):
 - Type guards for union result types: Use helper functions with `in` operator (`if ('score' in result)`) to safely access variant-specific fields
 - HTML security: Always escape user content with `escapeHtml()` replacing `&`, `<`, `>` to prevent XSS
 - Union type helpers: Extract getter functions (`getScore()`, `getReasoning()`) for fields that don't exist on all variants rather than inline checking
+- Wilson confidence intervals: Uses pre-computed Z-scores (0.9, 0.95, 0.99 supported). Edge case: 0 trials returns `{ lower: 0, upper: 0 }`. CI formatting uses en-dash: `${level*100}% CI: ${lower.toFixed(2)}–${upper.toFixed(2)}`
+- Failure matrix pattern: Use `Map<string, Stats>` with string keys for transition tracking. Key format: `${from} → ${to}`. First-step failures use `'(start)'` as the 'from' key. Class methods return filtered/sorted arrays rather than exposing the Map directly.
+- Test helper builder functions: When writing tests that need mock result objects, create inline builder functions (e.g., `buildTraceResult(firstFailureIndex)`) that return properly-shaped objects. Keeps test setup DRY.
 
 ## Project Structure
 
