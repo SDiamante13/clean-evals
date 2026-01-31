@@ -1,0 +1,4 @@
+# Ralph Progress — agent-eval
+# Branch: ralph/agent-eval-library
+# Started: 2026-01-30
+

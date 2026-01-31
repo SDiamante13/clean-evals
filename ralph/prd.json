@@ -1,0 +1,278 @@
+{
+  "project": "agent-eval",
+  "branchName": "ralph/agent-eval-library",
+  "description": "Agent Eval - A TypeScript library for evaluating AI agent behavior using OpenTelemetry traces, deterministic checks, and LLM-as-a-judge",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Initialize TypeScript library scaffolding",
+      "description": "As a developer, I want the base project configured so that I can build and test the library.",
+      "acceptanceCriteria": [
+        "package.json configured with name 'agent-eval' and ESM module type",
+        "tsconfig.json with strict mode and declaration files enabled",
+        "Vitest configured and runnable",
+        "src/index.ts exists as entry point",
+        "npm run build passes with zero errors",
+        "npm test passes with zero tests",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Add InMemorySpanExporter utility",
+      "description": "As a test author, I want an isolated per-test span exporter so that telemetry captured in one test does not leak into another.",
+      "acceptanceCriteria": [
+        "Install @opentelemetry/sdk-node and @opentelemetry/sdk-trace-base",
+        "Export createTestTracer() returning { tracer, exporter, shutdown }",
+        "Unit test creates spans and reads them back from exporter",
+        "No spans leak between separate createTestTracer() calls",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Implement findToolCalls() span inspector",
+      "description": "As a test author, I want to extract tool call names and arguments from spans so that I can assert on agent behavior.",
+      "acceptanceCriteria": [
+        "Create findToolCalls(spans: ReadableSpan[]) function",
+        "Parses tool name and arguments from span attributes",
+        "Supports OpenAI function-calling attribute keys and generic tool.name / tool.arguments",
+        "Unit test with fake spans asserts correct extraction of tool name and arguments",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Implement deterministic evaluateTrace() function",
+      "description": "As a test author, I want to compare extracted tool calls against expected calls and get a score.",
+      "acceptanceCriteria": [
+        "Create evaluateTrace({ spans, expected: [{ toolName, args? }] })",
+        "Returns { pass: boolean, score: number, details: string[] }",
+        "Exact match on tool name, deep-equal on args when provided",
+        "Score = matched / expected (0.0-1.0)",
+        "Tests for full match, partial match, no match, and args mismatch",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Add toPassTraceEval() Vitest custom matcher",
+      "description": "As a test author, I want a Vitest matcher so that I can write expect(spans).toPassTraceEval([...]) assertions.",
+      "acceptanceCriteria": [
+        "Implement toPassTraceEval(expected, options?) custom matcher",
+        "Support options: { passThreshold?: number, warnThreshold?: number }",
+        "Log warning to console when score is between warn and pass thresholds",
+        "Vitest test using expect(spans).toPassTraceEval([...]) passes and fails correctly",
+        "Warning logged for scores between warn and pass thresholds",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Define JudgeProvider interface and OpenAI provider",
+      "description": "As a developer, I want a provider abstraction for LLM judges so that different models can be used interchangeably.",
+      "acceptanceCriteria": [
+        "Define JudgeProvider interface: judge(prompt: string): Promise<{ score: number, reasoning: string }>",
+        "Implement OpenAIJudgeProvider using openai SDK",
+        "System prompt instructs LLM to return JSON { score, reasoning }",
+        "Integration test with mocked HTTP confirms correct prompt construction and response parsing",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Add Anthropic judge provider",
+      "description": "As a developer, I want an Anthropic judge provider so that I can use Claude for evaluation.",
+      "acceptanceCriteria": [
+        "Implement AnthropicJudgeProvider using @anthropic-ai/sdk",
+        "Reuses shared system prompt and JSON parsing logic",
+        "Mocked integration test passes",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Add Ollama judge provider",
+      "description": "As a developer, I want an Ollama judge provider so that I can run evaluations locally.",
+      "acceptanceCriteria": [
+        "Implement OllamaJudgeProvider using local HTTP endpoint",
+        "Reuses shared system prompt and JSON parsing logic",
+        "Mocked integration test passes",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Implement evaluateOutput() with inline rubric",
+      "description": "As a test author, I want to grade agent output using an LLM judge with a rubric.",
+      "acceptanceCriteria": [
+        "Create evaluateOutput({ output, rubric, judge }) function",
+        "Constructs grading prompt embedding the rubric and output",
+        "Returns { pass: boolean, score: number, reasoning: string }",
+        "Unit test with fake judge asserts pass/fail/warn thresholds",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Add toPassEval() Vitest custom matcher",
+      "description": "As a test author, I want a Vitest matcher for LLM-graded output assertions.",
+      "acceptanceCriteria": [
+        "Implement expect(output).toPassEval({ rubric, judge, passThreshold?, warnThreshold? })",
+        "Print judge reasoning on failure",
+        "Vitest test using matcher with mock judge passes and fails correctly",
+        "Reasoning is visible in test output on failure",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 10,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Implement trace-to-chronological-story flattener",
+      "description": "As a developer, I want to convert nested spans into a plain-text chronological narrative for the LLM judge.",
+      "acceptanceCriteria": [
+        "Create distillTrace(spans: ReadableSpan[]): string",
+        "Orders spans by start time",
+        "Format: '1. [toolName] called with {args} → returned {result}'",
+        "Unit test with nested spans produces correct ordered output",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 11,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Wire distilled trace into LLM judge",
+      "description": "As a test author, I want to grade full agent trajectories by feeding the distilled trace story into the judge prompt.",
+      "acceptanceCriteria": [
+        "Extend toPassTraceEval with optional { judge, rubric } to enable LLM grading",
+        "Appends distilled story to the rubric prompt",
+        "Test with mock judge confirms the distilled story is included in the prompt",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 12,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-013",
+      "title": "Implement hybrid eval mode",
+      "description": "As a test author, I want fail-fast evaluation that skips the LLM call when deterministic checks fail.",
+      "acceptanceCriteria": [
+        "Create evaluateHybrid({ spans, expected, output, rubric, judge })",
+        "Run deterministic check first; if it fails, skip LLM call and return early",
+        "If deterministic passes, run LLM judge",
+        "Test confirms LLM judge is never called when deterministic check fails",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 13,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-014",
+      "title": "Add toPassHybridEval() matcher",
+      "description": "As a test author, I want a single Vitest matcher combining trace + output evaluation with fail-fast semantics.",
+      "acceptanceCriteria": [
+        "Implement toPassHybridEval() matcher",
+        "Combines trace and output eval in a single assertion",
+        "Vitest test demonstrates fail-fast skipping of LLM judge",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 14,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-015",
+      "title": "Add pass@k sampling support",
+      "description": "As a test author, I want to run evals multiple times to measure agent reliability.",
+      "acceptanceCriteria": [
+        "Add samples option to all matchers",
+        "Run the agent function k times and collect scores",
+        "Report pass if >= 1 run passes (pass@k semantics)",
+        "Report aggregate: min, max, mean scores",
+        "Test with flaky mock agent passes at k=3 but fails at k=1",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 15,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-016",
+      "title": "Create setupAgentEval() for vitest.setup.ts",
+      "description": "As a consumer, I want a single function that registers all custom matchers for zero-config setup.",
+      "acceptanceCriteria": [
+        "Implement setupAgentEval(options?) function",
+        "Registers all custom matchers with Vitest",
+        "Accepts optional default judge provider config",
+        "Example setup file works with zero additional config",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 16,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Export clean public API from src/index.ts",
+      "description": "As a consumer, I want clean named exports and TypeScript autocomplete for the library.",
+      "acceptanceCriteria": [
+        "Named exports for matchers, providers, utilities, and types",
+        "TypeScript declaration augmentation for Vitest expect",
+        "Consumer can import { setupAgentEval, OpenAIJudgeProvider } from 'agent-eval'",
+        "TypeScript autocomplete works for custom matchers",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
