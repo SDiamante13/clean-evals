@@ -14,9 +14,7 @@ export interface OutputEvalResult {
   reasoning: string;
 }
 
-export async function evaluateOutput(
-  options: EvaluateOutputOptions,
-): Promise<OutputEvalResult> {
+export async function evaluateOutput(options: EvaluateOutputOptions): Promise<OutputEvalResult> {
   const { output, rubric, judge } = options;
   const passThreshold = options.passThreshold ?? 0.7;
 

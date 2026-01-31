@@ -83,3 +83,30 @@
   - Ollama chat API response shape: `{ message: { content: string } }`
   - Default endpoint: `http://localhost:11434/api/chat`, default model: `llama3`
 ---
+
+## 2026-01-31 - US-009
+- Implemented `evaluateOutput({ output, rubric, judge })` in `src/evaluate-output.ts`
+- Constructs grading prompt with rubric and output, calls judge, returns pass/fail based on threshold
+- Default passThreshold is 0.7; can be overridden via options
+- Unit tests with fake judge verify pass/fail/warn thresholds and boundary conditions
+- Files changed: src/evaluate-output.ts, src/evaluate-output.test.ts, src/index.ts
+- Verified: lint, typecheck, and all 43 tests pass
+- **Learnings for future iterations:**
+  - Use builder functions for test judges (e.g., `buildFakeJudge(result)`)
+  - evaluateOutput accepts `passThreshold` and `warnThreshold` as optional params
+  - Grading prompt format: `## Rubric\n{rubric}\n\n## Agent Output\n{output}`
+---
+
+## 2026-01-31 - US-010
+- Implemented `toPassEval()` Vitest custom matcher in `src/matchers/to-pass-eval.ts`
+- Matcher accepts `{ rubric, judge, passThreshold?, warnThreshold? }` options
+- Calls `evaluateOutput()` internally and returns matcher result with pass/fail and reasoning
+- Reasoning is included in both success and failure messages
+- Unit tests with fake judge verify pass/fail thresholds and reasoning display
+- Files changed: src/matchers/to-pass-eval.ts, src/matchers/to-pass-eval.test.ts, src/matchers/register.ts, src/matchers/types.ts, src/index.ts
+- Verified: lint, typecheck, and all 49 tests pass
+- **Learnings for future iterations:**
+  - Custom matchers for async operations return `Promise<MatcherResult>` and type signature uses `Promise<T>`
+  - Matcher reasoning should be visible in both pass and fail message branches
+  - Register all matchers in `src/matchers/register.ts` using `expect.extend({})`
+---

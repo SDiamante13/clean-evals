@@ -50,6 +50,10 @@ Run three checks before committing (all must pass with zero errors):
 - Custom Vitest matchers: implementation in `src/matchers/`, registered in `register.ts`, types in `types.ts`
 - Type augmentation for custom matchers uses `declare module 'vitest'` with `Assertion<T>` and `AsymmetricMatchersContaining`
 - Test helpers use builder pattern: `buildToolSpan()` from `src/test-helpers/span-builder.ts`
+- Test builder pattern for judges: Use `buildFakeJudge(result)` functions to create test doubles
+- Default threshold: All evaluation functions use `passThreshold ?? 0.7` as default
+- Grading prompt format: `## Rubric\n{rubric}\n\n## Agent Output\n{output}`
+- Evaluation modules: Core function in `src/evaluate-*.ts`, tests in `src/evaluate-*.test.ts`, exports in `src/index.ts`
 
 ## Project Structure
 
