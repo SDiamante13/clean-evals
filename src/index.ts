@@ -15,7 +15,9 @@ export type { AnthropicJudgeOptions } from './judges/anthropic-judge-provider.js
 export { OllamaJudgeProvider } from './judges/ollama-judge-provider.js';
 export type { OllamaJudgeOptions } from './judges/ollama-judge-provider.js';
 export { evaluateOutput } from './evaluate-output.js';
+export { evaluateHybrid } from './evaluate-hybrid.js';
 export { distillTrace } from './distill-trace.js';
 export type { EvaluateOutputOptions, OutputEvalResult } from './evaluate-output.js';
+export type { EvaluateHybridOptions, HybridEvalResult } from './evaluate-hybrid.js';
 export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';

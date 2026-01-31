@@ -23,7 +23,7 @@ const DEFAULT_WARN_THRESHOLD = 0.5;
 export async function toPassTraceEval(
   spans: ReadableSpan[],
   expected: ExpectedCall[],
-  options: TraceEvalOptions = {},
+  options: TraceEvalOptions = {}
 ): Promise<MatcherResult> {
   const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
   const warnThreshold = options.warnThreshold ?? DEFAULT_WARN_THRESHOLD;

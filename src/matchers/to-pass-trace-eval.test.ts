@@ -25,9 +25,7 @@ describe('toPassTraceEval', () => {
   it('fails when expected tools are missing', async () => {
     const spans = [buildToolSpan({ toolName: 'search' })];
 
-    await expect(
-      expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'write_file' }]),
-    ).rejects.toThrow(/score 0.5/);
+    await expect(expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'write_file' }])).rejects.toThrow(/score 0.5/);
   });
 
   it('supports custom pass threshold', async () => {
@@ -44,7 +42,7 @@ describe('toPassTraceEval', () => {
       expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'write_file' }], {
         warnThreshold: 0.4,
         passThreshold: 0.8,
-      }),
+      })
     ).rejects.toThrow();
 
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Warning: score 0.5'));
@@ -55,7 +53,7 @@ describe('toPassTraceEval', () => {
     const spans = [buildToolSpan({ toolName: 'unrelated' })];
 
     await expect(
-      expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'write_file' }], { warnThreshold: 0.5 }),
+      expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'write_file' }], { warnThreshold: 0.5 })
     ).rejects.toThrow();
 
     expect(warnSpy).not.toHaveBeenCalled();
@@ -76,10 +74,11 @@ describe('toPassTraceEval with LLM judge', () => {
       buildToolSpan({ toolName: 'read_file', args: { path: '/a.ts' }, result: 'contents', startTimeMs: 2000 }),
     ];
 
-    await expect(spans).toPassTraceEval(
-      [{ toolName: 'search' }, { toolName: 'read_file' }],
-      { judge, rubric: 'Agent should search then read', passThreshold: 0.8 },
-    );
+    await expect(spans).toPassTraceEval([{ toolName: 'search' }, { toolName: 'read_file' }], {
+      judge,
+      rubric: 'Agent should search then read',
+      passThreshold: 0.8,
+    });
 
     const prompt = (judge.judge as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
     expect(prompt).toContain('## Rubric');
@@ -94,10 +93,7 @@ describe('toPassTraceEval with LLM judge', () => {
     const spans = [buildToolSpan({ toolName: 'search' })];
 
     await expect(
-      expect(spans).toPassTraceEval(
-        [{ toolName: 'search' }],
-        { judge, rubric: 'Should be thorough', passThreshold: 0.7 },
-      ),
+      expect(spans).toPassTraceEval([{ toolName: 'search' }], { judge, rubric: 'Should be thorough', passThreshold: 0.7 })
     ).rejects.toThrow(/score 0.3/);
   });
 
@@ -106,10 +102,7 @@ describe('toPassTraceEval with LLM judge', () => {
     const spans = [buildToolSpan({ toolName: 'search' })];
 
     await expect(
-      expect(spans).toPassTraceEval(
-        [{ toolName: 'search' }],
-        { judge, rubric: 'Complete all steps', passThreshold: 0.7 },
-      ),
+      expect(spans).toPassTraceEval([{ toolName: 'search' }], { judge, rubric: 'Complete all steps', passThreshold: 0.7 })
     ).rejects.toThrow(/Missed critical steps/);
   });
 
