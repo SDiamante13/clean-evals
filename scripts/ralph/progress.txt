@@ -249,3 +249,17 @@
   - formatFirstFailure() in matcher formats as: "First failure at step N: expected X but got Y"
   - actual is null when agent stopped early (fewer spans than expected)
 ---
+
+## 2026-01-31 - US-021
+- evaluateGuardrails() already implemented in src/evaluate-guardrails.ts
+- Built-in factories: matchesRegex, matchesJsonSchema, containsNone
+- Types: Guardrail, GuardrailResult, GuardrailsEvalResult
+- 11 tests in evaluate-guardrails.test.ts covering all factories and mixed pass/fail
+- Exported from index.ts
+- Verified: lint, typecheck, and all 106 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - Guardrail check functions can return boolean or { pass, reason } object
+  - matchesJsonSchema uses typeof checks against schema value strings (e.g., 'string', 'number')
+  - containsNone uses Array.filter + String.includes for forbidden string detection
+---

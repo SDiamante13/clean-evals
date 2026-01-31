@@ -39,9 +39,7 @@ export function matchesRegex(pattern: RegExp): (output: string) => { pass: boole
   };
 }
 
-export function matchesJsonSchema(
-  schema: Record<string, string>
-): (output: string) => { pass: boolean; reason: string } {
+export function matchesJsonSchema(schema: Record<string, string>): (output: string) => { pass: boolean; reason: string } {
   return (output: string) => {
     try {
       const parsed: unknown = JSON.parse(output);

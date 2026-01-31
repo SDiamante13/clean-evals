@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  evaluateGuardrails,
-  matchesRegex,
-  matchesJsonSchema,
-  containsNone,
-} from './evaluate-guardrails.js';
+import { evaluateGuardrails, matchesRegex, matchesJsonSchema, containsNone } from './evaluate-guardrails.js';
 
 describe('evaluateGuardrails', () => {
   it('passes when all guardrails pass', () => {
@@ -27,9 +22,7 @@ describe('evaluateGuardrails', () => {
   });
 
   it('supports object return from check', () => {
-    const result = evaluateGuardrails('test', [
-      { name: 'custom', check: () => ({ pass: false, reason: 'nope' }) },
-    ]);
+    const result = evaluateGuardrails('test', [{ name: 'custom', check: () => ({ pass: false, reason: 'nope' }) }]);
     expect(result.pass).toBe(false);
     expect(result.results[0].reason).toBe('nope');
   });
