@@ -1,10 +1,10 @@
+import { wilsonInterval, type ConfidenceInterval } from './wilson-interval.js';
+
 export interface SamplesConfig {
   count: number;
+  confidenceLevel?: number;
 }
 
-/**
- * Aggregated results from running an eval multiple times (pass@k).
- */
 export interface SampledResult {
   pass: boolean;
   scores: number[];
@@ -12,23 +12,9 @@ export interface SampledResult {
   max: number;
   mean: number;
   passCount: number;
+  confidenceInterval: ConfidenceInterval;
 }
 
-/**
- * Runs an eval function multiple times and aggregates results using pass@k semantics.
- *
- * Passes if at least one run passes. Reports min, max, and mean scores
- * across all runs for reliability analysis.
- *
- * @example
- * ```ts
- * const sampled = await runWithSamples(
- *   () => evaluateOutput({ output, rubric, judge }),
- *   { count: 3 },
- * );
- * // sampled.pass === true if any of the 3 runs passed
- * ```
- */
 export async function runWithSamples(
   evalFn: () => Promise<{ pass: boolean; score: number }>,
   config: SamplesConfig
@@ -46,6 +32,9 @@ export async function runWithSamples(
     }
   }
 
+  const level = config.confidenceLevel ?? 0.95;
+  const ci = wilsonInterval(passCount, scores.length, level);
+
   return {
     pass: passCount >= 1,
     scores,
@@ -53,11 +42,17 @@ export async function runWithSamples(
     max: Math.max(...scores),
     mean: scores.reduce((sum, score) => sum + score, 0) / scores.length,
     passCount,
+    confidenceInterval: ci,
   };
 }
 
-export function formatSampledMessage(sampled: SampledResult, passCase: boolean): string {
-  const stats = `pass@${sampled.scores.length}: ${sampled.passCount}/${sampled.scores.length} passed | min=${sampled.min}, max=${sampled.max}, mean=${sampled.mean.toFixed(2)}`;
+export function formatSampledMessage(
+  sampled: SampledResult,
+  passCase: boolean
+): string {
+  const ci = sampled.confidenceInterval;
+  const ciStr = `${Math.round(ci.level * 100)}% CI: ${ci.lower.toFixed(2)}–${ci.upper.toFixed(2)}`;
+  const stats = `pass@${sampled.scores.length}: ${sampled.passCount}/${sampled.scores.length} passed (${ciStr}) | min=${sampled.min}, max=${sampled.max}, mean=${sampled.mean.toFixed(2)}`;
 
   if (passCase) {
     return `Expected NOT to pass but ${stats}`;

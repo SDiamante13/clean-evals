@@ -31,3 +31,5 @@ export type { Guardrail, GuardrailResult, GuardrailsEvalResult } from './evaluat
 export { toPassGuardrails } from './matchers/to-pass-guardrails.js';
 export { dumpFailures } from './dump-failures.js';
 export type { FailureEntry, DumpFailuresOptions, EvalResult } from './dump-failures.js';
+export { wilsonInterval } from './wilson-interval.js';
+export type { ConfidenceInterval } from './wilson-interval.js';
