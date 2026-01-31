@@ -16,19 +16,13 @@ declare const console: { warn: (msg: string) => void };
 const DEFAULT_PASS_THRESHOLD = 1.0;
 const DEFAULT_WARN_THRESHOLD = 0.5;
 
-export function toPassTraceEval(
-  spans: ReadableSpan[],
-  expected: ExpectedCall[],
-  options: TraceEvalOptions = {},
-): MatcherResult {
+export function toPassTraceEval(spans: ReadableSpan[], expected: ExpectedCall[], options: TraceEvalOptions = {}): MatcherResult {
   const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
   const warnThreshold = options.warnThreshold ?? DEFAULT_WARN_THRESHOLD;
   const result = evaluateTrace({ spans, expected });
 
   if (result.score >= warnThreshold && result.score < passThreshold) {
-    console.warn(
-      `[agent-eval] Warning: score ${result.score} is between warn (${warnThreshold}) and pass (${passThreshold}) thresholds`,
-    );
+    console.warn(`[agent-eval] Warning: score ${result.score} is between warn (${warnThreshold}) and pass (${passThreshold}) thresholds`);
   }
 
   const pass = result.score >= passThreshold;

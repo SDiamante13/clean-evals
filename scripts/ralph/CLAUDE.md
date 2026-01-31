@@ -127,3 +127,10 @@ If there are still stories with `passes: false`, end your response normally (ano
 - Commit frequently
 - Keep CI green
 - Read the Codebase Patterns section in progress.txt before starting
+
+## Project-Specific Patterns
+
+- **Ralph file locations**: All Ralph automation files (`prd.json`, `progress.txt`, `CLAUDE.md`) are in `scripts/ralph/` subdirectory, not project root
+- **Quality checks commands**: Use `npm run lint`, `./node_modules/.bin/tsc --noEmit`, `./node_modules/.bin/vitest run` - all must pass before committing
+- **PRD metadata updates**: When story is implemented but PRD not updated, verify checks pass, update `passes: true`, append progress, commit separately
+- **Test helper pattern**: Use `buildToolSpan()` from `src/test-helpers/span-builder.ts` for test fixtures - follows the builder pattern requirement
