@@ -71,3 +71,15 @@
   - Response content is an array of ContentBlock objects; check `block.type === 'text'`
   - Mock pattern: mock `@anthropic-ai/sdk` default export as a class with `messages = { create: mockFn }`
 ---
+
+## 2026-01-31 - US-008
+- OllamaJudgeProvider already implemented in prior commit (6a07ea7)
+- Uses native `fetch` to call Ollama's `/api/chat` endpoint
+- Verified: lint, typecheck, and all 37 tests pass
+- Marked PRD as `passes: true`
+- Files: src/judges/ollama-judge-provider.ts, src/judges/ollama-judge-provider.test.ts, src/judges/index.ts
+- **Learnings for future iterations:**
+  - Ollama uses native fetch (no SDK needed) — mock with `vi.stubGlobal('fetch', mockFn)`
+  - Ollama chat API response shape: `{ message: { content: string } }`
+  - Default endpoint: `http://localhost:11434/api/chat`, default model: `llama3`
+---

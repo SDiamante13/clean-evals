@@ -25,7 +25,7 @@ describe('OllamaJudgeProvider', () => {
     mockFetch.mockResolvedValue(
       jsonResponse({
         message: { content: '{"score": 0.85, "reasoning": "Solid output"}' },
-      }),
+      })
     );
 
     const result = await provider.judge('Evaluate this output');
@@ -51,15 +51,12 @@ describe('OllamaJudgeProvider', () => {
     mockFetch.mockResolvedValue(
       jsonResponse({
         message: { content: '{"score": 0.5, "reasoning": "OK"}' },
-      }),
+      })
     );
 
     await custom.judge('test');
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      'http://my-server:8080/api/chat',
-      expect.objectContaining({ method: 'POST' }),
-    );
+    expect(mockFetch).toHaveBeenCalledWith('http://my-server:8080/api/chat', expect.objectContaining({ method: 'POST' }));
   });
 
   it('throws on HTTP error', async () => {
@@ -78,7 +75,7 @@ describe('OllamaJudgeProvider', () => {
     mockFetch.mockResolvedValue(
       jsonResponse({
         message: { content: 'not json' },
-      }),
+      })
     );
 
     await expect(provider.judge('test')).rejects.toThrow();
