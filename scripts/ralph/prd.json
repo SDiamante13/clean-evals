@@ -395,8 +395,8 @@
         "Tests pass"
       ],
       "priority": 24,
-      "passes": false,
-      "notes": "Depends on US-023"
+      "passes": true,
+      "notes": ""
     },
     {
       "id": "US-025",

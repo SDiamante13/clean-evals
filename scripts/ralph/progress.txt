@@ -288,3 +288,19 @@
   - EvalResult is union of OutputEvalResult | TraceEvalResult | HybridEvalResult
   - Default output path: ./eval-failures.json
 ---
+
+## 2026-01-31 - US-024
+- Added HTML format support to dumpFailures
+- format: 'json' | 'html' option (default: 'json')
+- HTML is self-contained with inline CSS
+- Shows input | output | reasoning | score in table
+- Handles all eval result types (OutputEvalResult, TraceEvalResult, HybridEvalResult)
+- 6 new tests in dump-failures-html.test.ts
+- Files changed: src/dump-failures.ts, src/dump-failures-html.test.ts
+- Verified: lint, typecheck, and all 129 tests pass
+- **Learnings for future iterations:**
+  - HybridEvalResult has deterministicScore, not score — use type guards
+  - getReasoning() helper handles both reasoning string and details array
+  - HTML escaping prevents XSS in user-generated content
+  - Default paths differ by format: .json vs .html
+---
