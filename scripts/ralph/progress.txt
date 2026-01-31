@@ -25,3 +25,14 @@
   - OpenTelemetry spans use `ReadableSpan` from `@opentelemetry/sdk-trace-base`
   - Attribute values can be string, number, boolean, or arrays — always parse JSON strings for args
 ---
+
+## 2026-01-31 - US-004
+- Implemented `evaluateTrace({ spans, expected })` in `src/evaluate-trace.ts`
+- Compares extracted tool calls against expected calls with exact name match and deep-equal args
+- Score = matched / expected (0.0-1.0), pass when score === 1.0
+- Files changed: `src/evaluate-trace.ts`, `src/evaluate-trace.test.ts`, `src/index.ts`
+- **Learnings for future iterations:**
+  - `evaluateTrace` uses `findToolCalls` internally — no need to call it separately
+  - Args comparison uses sorted JSON.stringify for deep equality
+  - When expected has no args, any args on the actual call are accepted
+---
