@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateGuardrails, matchesRegex, matchesJsonSchema, containsNone } from './evaluate-guardrails.js';
+import { evaluateGuardrails, matchesRegex, matchesTypeMap, containsNone } from './evaluate-guardrails.js';
 
 describe('evaluateGuardrails', () => {
   it('passes when all guardrails pass', () => {
@@ -40,29 +40,29 @@ describe('matchesRegex', () => {
   });
 });
 
-describe('matchesJsonSchema', () => {
+describe('matchesTypeMap', () => {
   it('passes for valid JSON with correct types', () => {
-    const check = matchesJsonSchema({ name: 'string', age: 'number' });
+    const check = matchesTypeMap({ name: 'string', age: 'number' });
     const result = check('{"name":"Alice","age":30}');
     expect(result.pass).toBe(true);
   });
 
   it('fails for missing key', () => {
-    const check = matchesJsonSchema({ name: 'string', age: 'number' });
+    const check = matchesTypeMap({ name: 'string', age: 'number' });
     const result = check('{"name":"Alice"}');
     expect(result.pass).toBe(false);
     expect(result.reason).toContain('Missing key: age');
   });
 
   it('fails for wrong type', () => {
-    const check = matchesJsonSchema({ name: 'string' });
+    const check = matchesTypeMap({ name: 'string' });
     const result = check('{"name":42}');
     expect(result.pass).toBe(false);
     expect(result.reason).toContain('expected string');
   });
 
   it('fails for invalid JSON', () => {
-    const check = matchesJsonSchema({ name: 'string' });
+    const check = matchesTypeMap({ name: 'string' });
     const result = check('not json');
     expect(result.pass).toBe(false);
     expect(result.reason).toContain('not valid JSON');
