@@ -26,12 +26,11 @@ export { DETERMINISTIC_PASS_THRESHOLD, LLM_PASS_THRESHOLD, DEFAULT_WARN_THRESHOL
 export { runWithSamples } from './run-with-samples.js';
 export type { SamplesConfig, SampledResult } from './run-with-samples.js';
 export { setupAgentEval } from './setup-agent-eval.js';
-export { evaluateGuardrails, matchesRegex, matchesJsonSchema, containsNone } from './evaluate-guardrails.js';
+export { evaluateGuardrails, matchesRegex, matchesTypeMap, containsNone } from './evaluate-guardrails.js';
 export type { Guardrail, GuardrailResult, GuardrailsEvalResult } from './evaluate-guardrails.js';
 export { toPassGuardrails } from './matchers/to-pass-guardrails.js';
 export { dumpFailures } from './dump-failures.js';
 export type { FailureEntry, DumpFailuresOptions, EvalResult } from './dump-failures.js';
-export { wilsonInterval } from './wilson-interval.js';
-export type { ConfidenceInterval } from './wilson-interval.js';
 export { buildFailureMatrix, FailureMatrix } from './failure-matrix.js';
 export type { FailureMatrixInput } from './failure-matrix.js';
+export { buildToolSpan } from './test-helpers/span-builder.js';
