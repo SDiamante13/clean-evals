@@ -156,3 +156,16 @@
   - Fail-fast: when deterministic check fails, message shows "LLM judge was skipped"
   - Builder function `buildFakeJudge(result)` used for all judge test doubles
 ---
+
+## 2026-01-31 - US-015
+- Already implemented in prior commit (2517636)
+- `runWithSamples()` in `src/run-with-samples.ts` runs eval function k times, reports pass@k
+- `SamplesConfig` and `SampledResult` types exported, `formatSampledMessage` for matcher output
+- All three matchers (`toPassEval`, `toPassTraceEval`, `toPassHybridEval`) support `samples` option
+- Verified: lint, typecheck, and all 77 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - `runWithSamples` takes `evalFn: () => Promise<{pass, score}>` and `SamplesConfig { count }`
+  - pass@k semantics: passes if >= 1 sample passes
+  - Reports aggregate stats: min, max, mean, passCount
+---

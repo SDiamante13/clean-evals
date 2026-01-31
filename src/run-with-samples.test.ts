@@ -52,19 +52,13 @@ describe('runWithSamples', () => {
 
 describe('formatSampledMessage', () => {
   it('formats failure message', () => {
-    const msg = formatSampledMessage(
-      { pass: false, scores: [0.2, 0.3], min: 0.2, max: 0.3, mean: 0.25, passCount: 0 },
-      false
-    );
+    const msg = formatSampledMessage({ pass: false, scores: [0.2, 0.3], min: 0.2, max: 0.3, mean: 0.25, passCount: 0 }, false);
     expect(msg).toContain('Expected at least 1 pass');
     expect(msg).toContain('0/2 passed');
   });
 
   it('formats negated pass message', () => {
-    const msg = formatSampledMessage(
-      { pass: true, scores: [0.9, 0.8], min: 0.8, max: 0.9, mean: 0.85, passCount: 2 },
-      true
-    );
+    const msg = formatSampledMessage({ pass: true, scores: [0.9, 0.8], min: 0.8, max: 0.9, mean: 0.85, passCount: 2 }, true);
     expect(msg).toContain('Expected NOT to pass');
     expect(msg).toContain('2/2 passed');
   });
