@@ -30,6 +30,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/sdk-trace-base": "^2.5.0",
-    "@opentelemetry/sdk-trace-node": "^2.5.0"
+    "@opentelemetry/sdk-trace-node": "^2.5.0",
+    "openai": "^6.17.0"
   }
 }

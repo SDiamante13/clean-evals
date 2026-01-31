@@ -5,3 +5,8 @@ export { evaluateTrace } from './evaluate-trace.js';
 export type { ExpectedCall, TraceEvalResult } from './evaluate-trace.js';
 export { toPassTraceEval } from './matchers/to-pass-trace-eval.js';
 export type {} from './matchers/types.js';
+export type { JudgeProvider, JudgeResult } from './judges/judge-provider.js';
+export { OpenAIJudgeProvider } from './judges/openai-judge-provider.js';
+export type { OpenAIJudgeOptions } from './judges/openai-judge-provider.js';
+export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
+export { parseJudgeResponse } from './judges/parse-judge-response.js';
