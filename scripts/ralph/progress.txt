@@ -133,3 +133,14 @@
   - Judge prompt format for traces: `## Rubric\n{rubric}\n\n## Agent Trace\n{story}`
   - Tests for async matchers use `await expect(...).rejects.toThrow()` pattern
 ---
+
+## 2026-01-31 - US-013
+- Already implemented in prior commit (6643745)
+- `evaluateHybrid()` in `src/evaluate-hybrid.ts` runs deterministic check first, skips LLM if it fails
+- Verified: lint, typecheck, and all 63 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - `evaluateHybrid` composes `evaluateTrace` + `evaluateOutput` with fail-fast semantics
+  - Result includes `skippedLlm` boolean and optional `llmResult`
+  - Test pattern: verify `judge.judge` was `not.toHaveBeenCalled()` when deterministic fails
+---
