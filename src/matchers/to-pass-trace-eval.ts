@@ -2,8 +2,11 @@ import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { evaluateTrace, ExpectedCall } from '../evaluate-trace.js';
 import { distillTrace } from '../distill-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
-import { runWithSamples, formatSampledMessage } from '../run-with-samples.js';
+import { runWithSamples } from '../run-with-samples.js';
 import type { SamplesConfig } from '../run-with-samples.js';
+import type { MatcherResult } from './types.js';
+import { buildSampledMatcherResult } from './types.js';
+import { DETERMINISTIC_PASS_THRESHOLD, DEFAULT_WARN_THRESHOLD } from '../defaults.js';
 
 export interface TraceEvalOptions {
   passThreshold?: number;
@@ -13,26 +16,19 @@ export interface TraceEvalOptions {
   samples?: SamplesConfig;
 }
 
-interface MatcherResult {
-  pass: boolean;
-  message: () => string;
-}
-
 declare const console: { warn: (msg: string) => void };
-
-const DEFAULT_PASS_THRESHOLD = 1.0;
-const DEFAULT_WARN_THRESHOLD = 0.5;
 
 export async function toPassTraceEval(
   spans: ReadableSpan[],
   expected: ExpectedCall[],
   options: TraceEvalOptions = {}
 ): Promise<MatcherResult> {
-  const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
+  const passThreshold = options.passThreshold ?? DETERMINISTIC_PASS_THRESHOLD;
   const warnThreshold = options.warnThreshold ?? DEFAULT_WARN_THRESHOLD;
 
-  if (options.samples) {
-    return runSampled(spans, expected, options, passThreshold);
+  const samplesConfig = options.samples;
+  if (samplesConfig) {
+    return runSampled(spans, expected, options, passThreshold, samplesConfig);
   }
 
   return runSingle(spans, expected, options, passThreshold, warnThreshold);
@@ -65,7 +61,8 @@ async function runSampled(
   spans: ReadableSpan[],
   expected: ExpectedCall[],
   options: TraceEvalOptions,
-  passThreshold: number
+  passThreshold: number,
+  samplesConfig: SamplesConfig
 ): Promise<MatcherResult> {
   const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
     const deterministicResult = evaluateTrace({ spans, expected });
@@ -78,11 +75,8 @@ async function runSampled(
     return { pass: judgeResult.score >= passThreshold, score: judgeResult.score };
   };
 
-  const sampled = await runWithSamples(evalFn, options.samples!);
-  return {
-    pass: sampled.pass,
-    message: (): string => formatSampledMessage(sampled, sampled.pass),
-  };
+  const sampled = await runWithSamples(evalFn, samplesConfig);
+  return buildSampledMatcherResult(sampled);
 }
 
 function logWarningIfNeeded(score: number, warnThreshold: number, passThreshold: number): void {

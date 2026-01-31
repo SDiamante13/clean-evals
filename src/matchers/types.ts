@@ -1,3 +1,5 @@
+import { formatSampledMessage } from '../run-with-samples.js';
+import type { SampledResult } from '../run-with-samples.js';
 import type { ExpectedCall } from '../evaluate-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
 import type { SamplesConfig } from '../run-with-samples.js';
@@ -26,6 +28,18 @@ interface HybridEvalOptions {
   passThreshold?: number;
   warnThreshold?: number;
   samples?: SamplesConfig;
+}
+
+export interface MatcherResult {
+  pass: boolean;
+  message: () => string;
+}
+
+export function buildSampledMatcherResult(sampled: SampledResult): MatcherResult {
+  return {
+    pass: sampled.pass,
+    message: (): string => formatSampledMessage(sampled, sampled.pass),
+  };
 }
 
 declare module 'vitest' {

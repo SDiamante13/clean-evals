@@ -2,8 +2,10 @@ import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { evaluateHybrid } from '../evaluate-hybrid.js';
 import type { ExpectedCall } from '../evaluate-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
-import { runWithSamples, formatSampledMessage } from '../run-with-samples.js';
+import { runWithSamples } from '../run-with-samples.js';
 import type { SamplesConfig } from '../run-with-samples.js';
+import type { MatcherResult } from './types.js';
+import { buildSampledMatcherResult } from './types.js';
 
 export interface HybridEvalOptions {
   expected: ExpectedCall[];
@@ -15,14 +17,10 @@ export interface HybridEvalOptions {
   samples?: SamplesConfig;
 }
 
-interface MatcherResult {
-  pass: boolean;
-  message: () => string;
-}
-
 export async function toPassHybridEval(spans: ReadableSpan[], options: HybridEvalOptions): Promise<MatcherResult> {
-  if (options.samples) {
-    return runSampled(spans, options);
+  const samplesConfig = options.samples;
+  if (samplesConfig) {
+    return runSampled(spans, options, samplesConfig);
   }
 
   return runSingle(spans, options);
@@ -45,7 +43,11 @@ async function runSingle(spans: ReadableSpan[], options: HybridEvalOptions): Pro
   };
 }
 
-async function runSampled(spans: ReadableSpan[], options: HybridEvalOptions): Promise<MatcherResult> {
+async function runSampled(
+  spans: ReadableSpan[],
+  options: HybridEvalOptions,
+  samplesConfig: SamplesConfig
+): Promise<MatcherResult> {
   const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
     const result = await evaluateHybrid({
       spans,
@@ -60,11 +62,8 @@ async function runSampled(spans: ReadableSpan[], options: HybridEvalOptions): Pr
     return { pass: result.pass, score };
   };
 
-  const sampled = await runWithSamples(evalFn, options.samples!);
-  return {
-    pass: sampled.pass,
-    message: (): string => formatSampledMessage(sampled, sampled.pass),
-  };
+  const sampled = await runWithSamples(evalFn, samplesConfig);
+  return buildSampledMatcherResult(sampled);
 }
 
 function buildMessage(

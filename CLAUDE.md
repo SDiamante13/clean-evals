@@ -1,5 +1,9 @@
 # Agent Eval Library - Development Guide
 
+## Design Philosophy
+
+This library tends towards **ease of use** and **clean code** above all else.
+
 ## Judge Provider Architecture
 
 All LLM judge providers implement `JudgeProvider` interface from `src/judges/judge-provider.ts`. Shared components:

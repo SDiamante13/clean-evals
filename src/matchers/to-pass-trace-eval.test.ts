@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 import { buildToolSpan } from '../test-helpers/span-builder.js';
 import type { JudgeProvider, JudgeResult } from '../judges/judge-provider.js';
-import '../matchers/register.js';
+import { setupAgentEval } from '../setup-agent-eval.js';
+setupAgentEval();
 
 beforeEach(() => {
   vi.restoreAllMocks();

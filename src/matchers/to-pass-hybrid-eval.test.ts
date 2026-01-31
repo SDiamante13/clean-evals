@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { buildToolSpan } from '../test-helpers/span-builder.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
 import type { JudgeResult } from '../judges/judge-provider.js';
-import '../matchers/register.js';
+import { setupAgentEval } from '../setup-agent-eval.js';
+setupAgentEval();
 
 function buildFakeJudge(result: JudgeResult): JudgeProvider {
   return { judge: vi.fn().mockResolvedValue(result) };

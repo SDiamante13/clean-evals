@@ -1,4 +1,5 @@
 import type { JudgeProvider } from './judges/judge-provider.js';
+import { LLM_PASS_THRESHOLD } from './defaults.js';
 
 export interface EvaluateOutputOptions {
   output: string;
@@ -35,7 +36,7 @@ export interface OutputEvalResult {
  */
 export async function evaluateOutput(options: EvaluateOutputOptions): Promise<OutputEvalResult> {
   const { output, rubric, judge } = options;
-  const passThreshold = options.passThreshold ?? 0.7;
+  const passThreshold = options.passThreshold ?? LLM_PASS_THRESHOLD;
 
   const prompt = buildGradingPrompt(rubric, output);
   const result = await judge.judge(prompt);

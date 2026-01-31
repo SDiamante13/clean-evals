@@ -37,9 +37,13 @@ export async function runWithSamples(
   let passCount = 0;
 
   for (let i = 0; i < config.count; i++) {
-    const result = await evalFn();
-    scores.push(result.score);
-    if (result.pass) passCount++;
+    try {
+      const result = await evalFn();
+      scores.push(result.score);
+      if (result.pass) passCount++;
+    } catch {
+      scores.push(0);
+    }
   }
 
   return {

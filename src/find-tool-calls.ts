@@ -47,7 +47,7 @@ export function findToolCalls(spans: ReadableSpan[]): ToolCall[] {
   return spans.filter((span) => hasToolAttributes(span)).map((span) => extractToolCall(span));
 }
 
-function hasToolAttributes(span: ReadableSpan): boolean {
+export function hasToolAttributes(span: ReadableSpan): boolean {
   const attributes = span.attributes;
   return !!(attributes['tool.name'] || attributes['gen_ai.request.function_call.name'] || attributes['llm.function_call.name']);
 }
@@ -55,9 +55,12 @@ function hasToolAttributes(span: ReadableSpan): boolean {
 function extractToolCall(span: ReadableSpan): ToolCall {
   const attributes = span.attributes;
 
-  const toolName = (attributes['tool.name'] ?? attributes['gen_ai.request.function_call.name'] ?? attributes['llm.function_call.name'] ?? '') as string;
+  const toolName = String(
+    attributes['tool.name'] ?? attributes['gen_ai.request.function_call.name'] ?? attributes['llm.function_call.name'] ?? ''
+  );
 
-  const rawArgs = attributes['tool.arguments'] ?? attributes['gen_ai.request.function_call.arguments'] ?? attributes['llm.function_call.arguments'];
+  const rawArgs =
+    attributes['tool.arguments'] ?? attributes['gen_ai.request.function_call.arguments'] ?? attributes['llm.function_call.arguments'];
 
   const args = parseArgs(rawArgs);
 

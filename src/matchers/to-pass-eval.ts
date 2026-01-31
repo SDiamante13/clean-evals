@@ -1,7 +1,10 @@
 import type { JudgeProvider } from '../judges/judge-provider.js';
 import { evaluateOutput } from '../evaluate-output.js';
-import { runWithSamples, formatSampledMessage } from '../run-with-samples.js';
+import { runWithSamples } from '../run-with-samples.js';
 import type { SamplesConfig } from '../run-with-samples.js';
+import type { MatcherResult } from './types.js';
+import { buildSampledMatcherResult } from './types.js';
+import { LLM_PASS_THRESHOLD } from '../defaults.js';
 
 export interface PassEvalOptions {
   rubric: string;
@@ -11,18 +14,12 @@ export interface PassEvalOptions {
   samples?: SamplesConfig;
 }
 
-interface MatcherResult {
-  pass: boolean;
-  message: () => string;
-}
-
-const DEFAULT_PASS_THRESHOLD = 0.7;
-
 export async function toPassEval(output: string, options: PassEvalOptions): Promise<MatcherResult> {
-  const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
+  const passThreshold = options.passThreshold ?? LLM_PASS_THRESHOLD;
 
-  if (options.samples) {
-    return runSampled(output, options, passThreshold);
+  const samplesConfig = options.samples;
+  if (samplesConfig) {
+    return runSampled(output, options, passThreshold, samplesConfig);
   }
 
   return runSingle(output, options, passThreshold);
@@ -45,7 +42,12 @@ async function runSingle(output: string, options: PassEvalOptions, passThreshold
   };
 }
 
-async function runSampled(output: string, options: PassEvalOptions, passThreshold: number): Promise<MatcherResult> {
+async function runSampled(
+  output: string,
+  options: PassEvalOptions,
+  passThreshold: number,
+  samplesConfig: SamplesConfig
+): Promise<MatcherResult> {
   const sampled = await runWithSamples(async () => {
     const result = await evaluateOutput({
       output,
@@ -54,10 +56,7 @@ async function runSampled(output: string, options: PassEvalOptions, passThreshol
       passThreshold,
     });
     return { pass: result.pass, score: result.score };
-  }, options.samples!);
+  }, samplesConfig);
 
-  return {
-    pass: sampled.pass,
-    message: (): string => formatSampledMessage(sampled, sampled.pass),
-  };
+  return buildSampledMatcherResult(sampled);
 }

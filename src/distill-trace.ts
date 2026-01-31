@@ -1,5 +1,5 @@
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
-import { findToolCalls } from './find-tool-calls.js';
+import { findToolCalls, hasToolAttributes } from './find-tool-calls.js';
 
 /**
  * Converts OpenTelemetry spans into a chronological plain-text narrative.
@@ -15,14 +15,9 @@ import { findToolCalls } from './find-tool-calls.js';
  * ```
  */
 export function distillTrace(spans: ReadableSpan[]): string {
-  const toolSpans = spans.filter((span) => hasToolName(span)).sort((a, b) => compareStartTimes(a.startTime, b.startTime));
+  const toolSpans = spans.filter((span) => hasToolAttributes(span)).sort((a, b) => compareStartTimes(a.startTime, b.startTime));
 
   return toolSpans.map((span, index) => formatStep(span, index + 1)).join('\n');
-}
-
-function hasToolName(span: ReadableSpan): boolean {
-  const attributes = span.attributes;
-  return !!(attributes['tool.name'] || attributes['gen_ai.request.function_call.name'] || attributes['llm.function_call.name']);
 }
 
 function compareStartTimes(a: [number, number], b: [number, number]): number {
@@ -33,6 +28,6 @@ function compareStartTimes(a: [number, number], b: [number, number]): number {
 function formatStep(span: ReadableSpan, stepNumber: number): string {
   const [toolCall] = findToolCalls([span]);
   const argsString = toolCall.args ? JSON.stringify(toolCall.args) : '{}';
-  const result = (span.attributes['tool.result'] as string) ?? 'undefined';
+  const result = String(span.attributes['tool.result'] ?? 'undefined');
   return `${stepNumber}. [${toolCall.toolName}] called with ${argsString} → returned ${result}`;
 }
