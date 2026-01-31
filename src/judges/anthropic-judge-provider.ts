@@ -22,7 +22,6 @@ export class AnthropicJudgeProvider implements JudgeProvider {
   }
 
   async judge(prompt: string): Promise<JudgeResult> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const response: Anthropic.Message = await this.client.messages.create({
       model: this.model,
       max_tokens: 1024,

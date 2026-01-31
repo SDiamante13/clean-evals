@@ -22,7 +22,6 @@ export class OpenAIJudgeProvider implements JudgeProvider {
   }
 
   async judge(prompt: string): Promise<JudgeResult> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const response: OpenAI.Chat.Completions.ChatCompletion = await this.client.chat.completions.create({
       model: this.model,
       messages: [

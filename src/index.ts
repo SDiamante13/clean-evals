@@ -10,5 +10,7 @@ export { OpenAIJudgeProvider } from './judges/openai-judge-provider.js';
 export type { OpenAIJudgeOptions } from './judges/openai-judge-provider.js';
 export { AnthropicJudgeProvider } from './judges/anthropic-judge-provider.js';
 export type { AnthropicJudgeOptions } from './judges/anthropic-judge-provider.js';
+export { OllamaJudgeProvider } from './judges/ollama-judge-provider.js';
+export type { OllamaJudgeOptions } from './judges/ollama-judge-provider.js';
 export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';
