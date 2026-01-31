@@ -24,9 +24,7 @@ describe('findToolCalls', () => {
     await t.forceFlush();
     const result = findToolCalls(t.exporter.getFinishedSpans());
 
-    expect(result).toEqual([
-      { toolName: 'calculator', args: { a: 1, b: 2 } },
-    ]);
+    expect(result).toEqual([{ toolName: 'calculator', args: { a: 1, b: 2 } }]);
   });
 
   it('extracts tool calls using OpenAI function-calling attributes', async () => {
@@ -35,18 +33,13 @@ describe('findToolCalls', () => {
 
     const span = t.tracer.startSpan('function-call');
     span.setAttribute('gen_ai.request.function_call.name', 'get_weather');
-    span.setAttribute(
-      'gen_ai.request.function_call.arguments',
-      JSON.stringify({ city: 'NYC' }),
-    );
+    span.setAttribute('gen_ai.request.function_call.arguments', JSON.stringify({ city: 'NYC' }));
     span.end();
 
     await t.forceFlush();
     const result = findToolCalls(t.exporter.getFinishedSpans());
 
-    expect(result).toEqual([
-      { toolName: 'get_weather', args: { city: 'NYC' } },
-    ]);
+    expect(result).toEqual([{ toolName: 'get_weather', args: { city: 'NYC' } }]);
   });
 
   it('extracts tool calls using llm.function_call attributes', async () => {
@@ -55,18 +48,13 @@ describe('findToolCalls', () => {
 
     const span = t.tracer.startSpan('llm-call');
     span.setAttribute('llm.function_call.name', 'search');
-    span.setAttribute(
-      'llm.function_call.arguments',
-      JSON.stringify({ query: 'hello' }),
-    );
+    span.setAttribute('llm.function_call.arguments', JSON.stringify({ query: 'hello' }));
     span.end();
 
     await t.forceFlush();
     const result = findToolCalls(t.exporter.getFinishedSpans());
 
-    expect(result).toEqual([
-      { toolName: 'search', args: { query: 'hello' } },
-    ]);
+    expect(result).toEqual([{ toolName: 'search', args: { query: 'hello' } }]);
   });
 
   it('returns undefined args when no arguments attribute present', async () => {

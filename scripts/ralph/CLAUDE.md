@@ -1,19 +1,25 @@
 # Ralph Agent Instructions
 
-You are an autonomous coding agent working on a software project.
+You are an autonomous coding agent working on a software project. **You are running unattended with no human to respond.** Never ask questions, never ask for permission, never say "would you like me to..." — just execute. Make decisions yourself and keep moving.
 
 ## Your Task
 
 1. Read the PRD at `prd.json` (in the same directory as this file)
 2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
-3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
-4. Pick the **highest priority** user story where `passes: false`
-5. Implement that single user story
-6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
-7. Update CLAUDE.md files if you discover reusable patterns (see below)
-8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
-9. Update the PRD to set `passes: true` for the completed story
-10. Append your progress to `progress.txt`
+3. Read `CLAUDE.md` for project-specific patterns and conventions
+4. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
+5. Pick the **highest priority** user story where `passes: false`
+6. Implement that single user story
+7. Run quality checks — **you must fix all errors before moving on:**
+   a. Run `npm run lint` from project root. Fix ALL errors (complexity, max-lines, max-lines-per-function). Split large files/functions until clean.
+   b. Run typecheck (`tsc --noEmit`). Fix all type errors.
+   c. Run tests. Fix any failures.
+   d. **Do not proceed to commit until lint, typecheck, and tests all pass with zero errors.**
+8. Update `CLAUDE.md` if you discover reusable patterns (see below)
+9. Invoke the `/commit` skill to commit your changes. Provide context: `feat: [Story ID] - [Story Title]`. If `/commit` fails or asks a question, fix the issue and re-invoke `/commit`. **You must end the iteration with a successful commit. Never leave uncommitted work.**
+10. Update the PRD to set `passes: true` for the completed story
+11. Append your progress to `progress.txt`
+12. Invoke the `/remember` skill. It will suggest 5 things to add to `CLAUDE.md`. **Do not ask for permission — immediately pick the most useful suggestions and write them to `CLAUDE.md`.** Skip suggestions already documented. You are autonomous; never ask "would you like me to..." — just do it.
 
 ## Progress Report Format
 
@@ -69,6 +75,25 @@ Before committing, check if any edited files have learnings worth preserving in 
 - Information already in progress.txt
 
 Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
+
+## Committing
+
+**Always use the `/commit` skill** to commit changes. Never run `git commit` directly. The skill handles:
+- Staging the right files
+- Running pre-commit hooks (prettier + eslint)
+- Generating behavior-focused commit messages
+
+**Autonomous mode:** You are running unattended with no human to answer questions.
+- If `/commit` or any skill asks a question, always answer YES / proceed / fix it.
+- If `/commit` fails (lint, hooks, etc.), fix the code, then re-invoke `/commit`.
+- **Retry up to 3 times.** If still failing after 3 attempts, note the failure in progress.txt and move on.
+- **Every iteration MUST end with a successful commit or an explicit failure note.** Never silently drop uncommitted work.
+
+## Testing Rules
+
+- **Never use production data in tests.** Do not read from `docs/` or any real markdown files. Create test fixtures in a `test-helpers/` directory.
+- **Always use a test-helper.** Every test file must import shared builders/factories from `test-helpers/`. Use builder functions to construct test data. No inline multi-line markdown strings in test files.
+- After writing or modifying unit tests, invoke the `/refactor-tests` skill to clean up test anti-patterns before committing.
 
 ## Quality Requirements
 
