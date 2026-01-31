@@ -414,8 +414,8 @@
         "Tests pass"
       ],
       "priority": 25,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented — wilson-interval.ts, run-with-samples.ts updated, tests passing"
     },
     {
       "id": "US-026",

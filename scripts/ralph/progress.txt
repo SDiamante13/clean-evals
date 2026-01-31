@@ -304,3 +304,18 @@
   - HTML escaping prevents XSS in user-generated content
   - Default paths differ by format: .json vs .html
 ---
+
+## 2026-01-31 - US-025
+- Wilson confidence intervals already implemented in prior commits (38ba921)
+- wilsonInterval() in src/wilson-interval.ts with Wilson score interval formula
+- SampledResult includes confidenceInterval, formatSampledMessage includes CI string
+- runWithSamples accepts confidenceLevel config option (default 0.95)
+- Exported wilsonInterval and ConfidenceInterval from index.ts
+- 6 tests in wilson-interval.test.ts, 8 tests in run-with-samples.test.ts
+- Verified: lint, typecheck, and all 131 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - Wilson interval uses pre-computed Z_SCORES lookup (0.9, 0.95, 0.99)
+  - Edge case: 0 trials returns { lower: 0, upper: 0 }
+  - CI formatting: `${level*100}% CI: ${lower}–${upper}` with en-dash
+---

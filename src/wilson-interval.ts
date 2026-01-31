@@ -13,16 +13,10 @@ const Z_SCORES: Record<number, number> = {
 function getZScore(level: number): number {
   const z = Z_SCORES[level];
   if (z !== undefined) return z;
-  throw new Error(
-    `Unsupported confidence level: ${level}. Use 0.9, 0.95, or 0.99.`
-  );
+  throw new Error(`Unsupported confidence level: ${level}. Use 0.9, 0.95, or 0.99.`);
 }
 
-export function wilsonInterval(
-  successes: number,
-  trials: number,
-  level = 0.95
-): ConfidenceInterval {
+export function wilsonInterval(successes: number, trials: number, level = 0.95): ConfidenceInterval {
   if (trials === 0) {
     return { lower: 0, upper: 0, level };
   }

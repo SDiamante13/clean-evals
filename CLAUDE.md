@@ -58,6 +58,10 @@ Run three checks before committing (all must pass with zero errors):
 - Default threshold: All evaluation functions use `passThreshold ?? 0.7` as default
 - Grading prompt format: `## Rubric\n{rubric}\n\n## Agent Output\n{output}`
 - Evaluation modules: Core function in `src/evaluate-*.ts`, tests in `src/evaluate-*.test.ts`, exports in `src/index.ts`
+- Test file splitting: When tests approach 150-line limit, split into separate files with descriptive suffixes (e.g., `-criteria.test.ts`, `-html.test.ts`)
+- Type guards for union result types: Use helper functions with `in` operator (`if ('score' in result)`) to safely access variant-specific fields
+- HTML security: Always escape user content with `escapeHtml()` replacing `&`, `<`, `>` to prevent XSS
+- Union type helpers: Extract getter functions (`getScore()`, `getReasoning()`) for fields that don't exist on all variants rather than inline checking
 
 ## Project Structure
 

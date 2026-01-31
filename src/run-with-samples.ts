@@ -46,10 +46,7 @@ export async function runWithSamples(
   };
 }
 
-export function formatSampledMessage(
-  sampled: SampledResult,
-  passCase: boolean
-): string {
+export function formatSampledMessage(sampled: SampledResult, passCase: boolean): string {
   const ci = sampled.confidenceInterval;
   const ciStr = `${Math.round(ci.level * 100)}% CI: ${ci.lower.toFixed(2)}–${ci.upper.toFixed(2)}`;
   const stats = `pass@${sampled.scores.length}: ${sampled.passCount}/${sampled.scores.length} passed (${ciStr}) | min=${sampled.min}, max=${sampled.max}, mean=${sampled.mean.toFixed(2)}`;
