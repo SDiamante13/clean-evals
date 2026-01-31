@@ -29,3 +29,5 @@ export { setupAgentEval } from './setup-agent-eval.js';
 export { evaluateGuardrails, matchesRegex, matchesJsonSchema, containsNone } from './evaluate-guardrails.js';
 export type { Guardrail, GuardrailResult, GuardrailsEvalResult } from './evaluate-guardrails.js';
 export { toPassGuardrails } from './matchers/to-pass-guardrails.js';
+export { dumpFailures } from './dump-failures.js';
+export type { FailureEntry, DumpFailuresOptions, EvalResult } from './dump-failures.js';
