@@ -42,10 +42,7 @@ describe('evaluateTrace', () => {
 
     const result = evaluateTrace({
       spans,
-      expected: [
-        { toolName: 'search' },
-        { toolName: 'write_file' },
-      ],
+      expected: [{ toolName: 'search' }, { toolName: 'write_file' }],
     });
 
     expect(result.pass).toBe(false);

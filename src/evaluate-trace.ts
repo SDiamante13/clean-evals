@@ -12,10 +12,7 @@ export interface TraceEvalResult {
   details: string[];
 }
 
-export function evaluateTrace(params: {
-  spans: ReadableSpan[];
-  expected: ExpectedCall[];
-}): TraceEvalResult {
+export function evaluateTrace(params: { spans: ReadableSpan[]; expected: ExpectedCall[] }): TraceEvalResult {
   const { spans, expected } = params;
   const actual = findToolCalls(spans);
   const details: string[] = [];
@@ -36,15 +33,10 @@ export function evaluateTrace(params: {
 }
 
 function findMatch(actual: ToolCall[], expected: ExpectedCall): boolean {
-  return actual.some(
-    (call) => call.toolName === expected.toolName && argsMatch(expected.args, call.args),
-  );
+  return actual.some((call) => call.toolName === expected.toolName && argsMatch(expected.args, call.args));
 }
 
-function argsMatch(
-  expected: Record<string, unknown> | undefined,
-  actual: Record<string, unknown> | undefined,
-): boolean {
+function argsMatch(expected: Record<string, unknown> | undefined, actual: Record<string, unknown> | undefined): boolean {
   if (expected === undefined) return true;
   try {
     return JSON.stringify(sortKeys(expected)) === JSON.stringify(sortKeys(actual ?? {}));
