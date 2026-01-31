@@ -94,7 +94,7 @@ describe('toPassEval with criteria', () => {
     const result = await toPassEval('output', {
       criteria: [{ name: 'Check', check: 'Is it ok?' }],
       judge,
-      samples: { count: 2 },
+      samples: { count: 2, passRate: 0.7 },
     });
 
     expect(result.pass).toBe(true);

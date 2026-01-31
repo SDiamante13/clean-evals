@@ -98,7 +98,7 @@ describe('toPassEval with samples', () => {
     const result = await toPassEval('output', {
       rubric: 'Be correct',
       judge,
-      samples: { count: 3 },
+      samples: { count: 3, passRate: 0.5 },
     });
 
     expect(result.pass).toBe(true);
@@ -110,7 +110,7 @@ describe('toPassEval with samples', () => {
     const result = await toPassEval('output', {
       rubric: 'Be correct',
       judge,
-      samples: { count: 1 },
+      samples: { count: 1, passRate: 0.7 },
     });
 
     expect(result.pass).toBe(false);
@@ -122,7 +122,7 @@ describe('toPassEval with samples', () => {
     const result = await toPassEval('output', {
       rubric: 'Be correct',
       judge,
-      samples: { count: 3 },
+      samples: { count: 3, passRate: 0.7 },
     });
 
     expect(result.message()).toContain('pass@3');
