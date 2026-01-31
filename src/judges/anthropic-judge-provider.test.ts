@@ -22,9 +22,7 @@ describe('AnthropicJudgeProvider', () => {
 
   it('sends system prompt and user prompt correctly', async () => {
     mockCreate.mockResolvedValue({
-      content: [
-        { type: 'text', text: '{"score": 0.9, "reasoning": "Good work"}' },
-      ],
+      content: [{ type: 'text', text: '{"score": 0.9, "reasoning": "Good work"}' }],
     });
 
     const result = await provider.judge('Evaluate this output');
@@ -42,9 +40,7 @@ describe('AnthropicJudgeProvider', () => {
   it('throws on empty response', async () => {
     mockCreate.mockResolvedValue({ content: [] });
 
-    await expect(provider.judge('test')).rejects.toThrow(
-      'Anthropic returned empty response',
-    );
+    await expect(provider.judge('test')).rejects.toThrow('Anthropic returned empty response');
   });
 
   it('throws on invalid JSON response', async () => {

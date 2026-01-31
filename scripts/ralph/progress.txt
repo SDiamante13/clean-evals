@@ -60,3 +60,14 @@
   - parseJudgeResponse() extracts JSON from surrounding text, validates score and reasoning fields
   - All judge providers share the same JUDGE_SYSTEM_PROMPT from system-prompt.ts
 ---
+
+## 2026-01-31 - US-007
+- AnthropicJudgeProvider already implemented in prior commit (e6d84a6)
+- Verified: lint, typecheck, and all 32 tests pass
+- Marked PRD as `passes: true`
+- Files: src/judges/anthropic-judge-provider.ts, src/judges/anthropic-judge-provider.test.ts, src/judges/index.ts
+- **Learnings for future iterations:**
+  - Anthropic SDK uses `messages.create()` with separate `system` param (not in messages array like OpenAI)
+  - Response content is an array of ContentBlock objects; check `block.type === 'text'`
+  - Mock pattern: mock `@anthropic-ai/sdk` default export as a class with `messages = { create: mockFn }`
+---
