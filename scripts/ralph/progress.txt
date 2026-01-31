@@ -9,6 +9,8 @@
 - Run quality checks: `./node_modules/.bin/tsc --noEmit` and `./node_modules/.bin/vitest run`
 - Must `npm install` first — node_modules not committed
 - Ralph files are in `scripts/ralph/`, not `ralph/`
+- Custom Vitest matchers: implementation in `src/matchers/`, registered in `register.ts`, types in `types.ts`
+- Type augmentation for custom matchers uses `declare module 'vitest'` with `Assertion<T>` and `AsymmetricMatchersContaining`
 
 ---
 
@@ -35,4 +37,16 @@
   - `evaluateTrace` uses `findToolCalls` internally — no need to call it separately
   - Args comparison uses sorted JSON.stringify for deep equality
   - When expected has no args, any args on the actual call are accepted
+---
+
+## 2026-01-31 - US-005
+- Already implemented in prior commits (cab5ae5, bd22bf0)
+- `toPassTraceEval()` custom matcher in `src/matchers/to-pass-trace-eval.ts`
+- Registration in `src/matchers/register.ts`, type augmentation in `src/matchers/types.ts`
+- Verified: lint, typecheck, and all 21 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - Custom matchers registered via `expect.extend()` in a separate register.ts file
+  - Type augmentation for Vitest matchers goes in `src/matchers/types.ts` using `declare module 'vitest'`
+  - `buildToolSpan()` from test-helpers used for all matcher tests
 ---
