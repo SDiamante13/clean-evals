@@ -195,3 +195,28 @@
   - Empty type export (`export type {}`) re-exports module augmentations to consumers
   - All judge providers, matchers, and utility functions already exported
 ---
+
+## 2026-01-31 - PRD Update: Hamel-Inspired Improvements (US-018 through US-026)
+- Added 9 new stories based on Hamel Husain's eval best practices
+- US-018/019: Named binary criteria (evaluateOutput + matcher)
+- US-020: First-failure diagnostics for trace evals
+- US-021/022: Deterministic guardrails (evaluateGuardrails + matcher)
+- US-023/024: Failure dump utility (JSON + HTML formats)
+- US-025: Wilson confidence intervals on sampled results
+- US-026: Transition failure matrix (depends on US-020)
+- Dependencies: US-019→US-018, US-024→US-023, US-026→US-020
+---
+
+## 2026-01-31 - US-018
+- Implementation already committed in 1167e5c with full criteria mode
+- evaluateOutput accepts `criteria: Criterion[]` as alternative to `rubric`
+- Judge called once per criterion, overall pass = all pass, score = fraction passed
+- Mutual exclusion enforced with clear error message
+- Separate test file: `evaluate-output-criteria.test.ts` with 6 tests
+- Verified: lint, typecheck, and all 86 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - Criteria mode uses discriminated union types (`RubricOptions | CriteriaOptions`) with `never` for mutual exclusion
+  - Per-criterion pass threshold is 0.5 (binary: pass/fail)
+  - Criteria results aggregated into reasoning string with `NAME: PASS/FAIL — reasoning` format
+---

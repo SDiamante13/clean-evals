@@ -43,11 +43,7 @@ async function runSingle(spans: ReadableSpan[], options: HybridEvalOptions): Pro
   };
 }
 
-async function runSampled(
-  spans: ReadableSpan[],
-  options: HybridEvalOptions,
-  samplesConfig: SamplesConfig
-): Promise<MatcherResult> {
+async function runSampled(spans: ReadableSpan[], options: HybridEvalOptions, samplesConfig: SamplesConfig): Promise<MatcherResult> {
   const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
     const result = await evaluateHybrid({
       spans,

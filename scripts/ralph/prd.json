@@ -273,6 +273,168 @@
       "priority": 17,
       "passes": true,
       "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Add evaluateOutput criteria mode",
+      "description": "As a developer, I want to define multiple named binary criteria instead of a single rubric so I get per-criterion pass/fail results.",
+      "acceptanceCriteria": [
+        "evaluateOutput() accepts optional criteria array: { name: string, check: string }[]",
+        "When criteria provided, judge called once per criterion with focused prompt",
+        "Result includes criteriaResults: { name: string, pass: boolean, reasoning: string }[]",
+        "Overall pass = all criteria pass, score = fraction passed",
+        "criteria and rubric are mutually exclusive — providing both throws clear error",
+        "Unit tests with fake judge verify per-criterion pass/fail and mutual exclusion error",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-019",
+      "title": "Add criteria support to toPassEval matcher",
+      "description": "As a test author, I want toPassEval to accept criteria option and display per-criterion results on failure.",
+      "acceptanceCriteria": [
+        "toPassEval matcher accepts criteria option (forwarded to evaluateOutput)",
+        "Failure message lists each criterion with its pass/fail status and reasoning",
+        "Success message shows all criteria passed",
+        "Works with samples option",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 19,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-020",
+      "title": "Add first-failure diagnostics to trace evals",
+      "description": "As a developer debugging agent failures, I want to see which step first diverged from expected behavior.",
+      "acceptanceCriteria": [
+        "TraceEvalResult gains firstFailureIndex: number | null (null when all matched)",
+        "firstFailureIndex is 0-based index into expected array of first unmatched call",
+        "TraceEvalResult gains firstFailure: { expected: ExpectedCall, actual: ToolCall | null } | null",
+        "actual is the tool call at that index or null if agent stopped early",
+        "toPassTraceEval matcher shows first failure prominently before full diff",
+        "Hybrid eval surfaces trace first-failure info in its result",
+        "Unit tests for full match (null), first-step failure, mid-step failure, and early-stop",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 20,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-021",
+      "title": "Add evaluateGuardrails function and built-in factories",
+      "description": "As a developer, I want fast deterministic checks (regex, predicates) without an LLM judge.",
+      "acceptanceCriteria": [
+        "New evaluateGuardrails(output, guardrails) function in src/evaluate-guardrails.ts",
+        "Guardrail type: { name: string, check: (output: string) => boolean | { pass: boolean, reason: string } }",
+        "Built-in factories: matchesRegex(pattern), matchesJsonSchema(schema), containsNone(forbidden[])",
+        "Result: { pass: boolean, results: { name: string, pass: boolean, reason?: string }[] }",
+        "Overall pass = all guardrails pass",
+        "No LLM calls — purely synchronous",
+        "Unit tests for each factory and mixed pass/fail scenarios",
+        "Exported from index.ts",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 21,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Add toPassGuardrails Vitest matcher",
+      "description": "As a test author, I want expect(output).toPassGuardrails([...]) assertions.",
+      "acceptanceCriteria": [
+        "Implement toPassGuardrails(guardrails) custom matcher",
+        "Failure message lists each guardrail with pass/fail and reason",
+        "Registered in setupAgentEval()",
+        "Type augmentation added to types.ts",
+        "Exported from index.ts",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "Add JSON failure dump utility",
+      "description": "As a developer doing error analysis, I want to export failed eval results to a JSON file for review.",
+      "acceptanceCriteria": [
+        "New dumpFailures(results, options?) function in src/dump-failures.ts",
+        "Input: array of { input: string, output: string, evalResult: OutputEvalResult | TraceEvalResult | HybridEvalResult, metadata?: Record<string, unknown> }",
+        "Only includes results where pass === false",
+        "Writes pretty-printed JSON to options.path (default: ./eval-failures.json)",
+        "Unit test verifies filtering and JSON output structure",
+        "Exported from index.ts",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "Add HTML failure dump format",
+      "description": "As a developer, I want an HTML view of failed evals with side-by-side input/output/reasoning.",
+      "acceptanceCriteria": [
+        "dumpFailures supports options.format: 'json' | 'html' (default: 'json')",
+        "HTML output is self-contained single file with inline CSS",
+        "Shows side-by-side: input | output | judge reasoning | trace narrative (if available)",
+        "Unit test verifies HTML contains expected sections",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": "Depends on US-023"
+    },
+    {
+      "id": "US-025",
+      "title": "Add Wilson confidence intervals to sampled results",
+      "description": "As a developer using pass@k sampling, I want confidence intervals on my pass rate.",
+      "acceptanceCriteria": [
+        "SampledResult gains confidenceInterval: { lower: number, upper: number, level: number }",
+        "Uses Wilson score interval calculation",
+        "Default confidence level: 0.95",
+        "runWithSamples() accepts optional confidenceLevel in config",
+        "Matcher messages include CI: 'pass@5: 3/5 passed (95% CI: 0.19–0.88)'",
+        "Exported wilsonInterval(successes, trials, level) utility for reuse",
+        "Unit tests for edge cases: 0/n, n/n, small samples",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-026",
+      "title": "Add transition failure matrix for agent traces",
+      "description": "As a developer evaluating agentic workflows, I want to see which tool-call transitions fail most often.",
+      "acceptanceCriteria": [
+        "New buildFailureMatrix(results) function in src/failure-matrix.ts",
+        "Input: array of { expected: ExpectedCall[], traceResult: TraceEvalResult }",
+        "Output FailureMatrix with matrix Map, hotspots() sorted by failure rate, summary() string",
+        "Failure on first step uses '(start)' as 'from' key",
+        "Uses firstFailureIndex from TraceEvalResult (requires US-020)",
+        "Unit tests for no failures, single hotspot, multiple transitions",
+        "Exported from index.ts",
+        "Typecheck passes",
+        "Tests pass"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": "Depends on US-020 for firstFailureIndex"
     }
   ]
 }

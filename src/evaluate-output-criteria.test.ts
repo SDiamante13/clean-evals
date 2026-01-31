@@ -30,9 +30,7 @@ describe('evaluateOutput with criteria', () => {
     const judge: JudgeProvider = {
       judge: vi.fn(async () => {
         callCount++;
-        return callCount === 1
-          ? { score: 0.9, reasoning: 'Greeting found' }
-          : { score: 0.3, reasoning: 'No summary found' };
+        return callCount === 1 ? { score: 0.9, reasoning: 'Greeting found' } : { score: 0.3, reasoning: 'No summary found' };
       }),
     };
 
@@ -91,9 +89,7 @@ describe('evaluateOutput with criteria', () => {
     const judge: JudgeProvider = {
       judge: vi.fn(async () => {
         callCount++;
-        return callCount <= 2
-          ? { score: 0.8, reasoning: 'Pass' }
-          : { score: 0.2, reasoning: 'Fail' };
+        return callCount <= 2 ? { score: 0.8, reasoning: 'Pass' } : { score: 0.2, reasoning: 'Fail' };
       }),
     };
 
@@ -120,7 +116,7 @@ describe('evaluateOutput with criteria', () => {
         rubric: 'Some rubric',
         criteria: [{ name: 'c1', check: 'Check' }],
         judge,
-      } as any),
+      } as any)
     ).rejects.toThrow('criteria and rubric are mutually exclusive');
   });
 });

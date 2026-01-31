@@ -87,7 +87,7 @@ async function evaluateWithCriteria(options: CriteriaOptions): Promise<OutputEva
         pass: result.score >= 0.5,
         reasoning: result.reasoning,
       };
-    }),
+    })
   );
 
   const passedCount = criteriaResults.filter((r) => r.pass).length;
