@@ -13,7 +13,8 @@ interface TraceEvalOptions {
 }
 
 interface PassEvalOptions {
-  rubric: string;
+  rubric?: string;
+  criteria?: { name: string; check: string }[];
   judge: JudgeProvider;
   passThreshold?: number;
   warnThreshold?: number;
