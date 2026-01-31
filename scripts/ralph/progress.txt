@@ -169,3 +169,16 @@
   - pass@k semantics: passes if >= 1 sample passes
   - Reports aggregate stats: min, max, mean, passCount
 ---
+
+## 2026-01-31 - US-016
+- Implemented `setupAgentEval()` in `src/setup-agent-eval.ts`
+- Single function call registers all custom matchers (`toPassTraceEval`, `toPassEval`, `toPassHybridEval`)
+- Exports from `src/index.ts` for use in `vitest.setup.ts` or test files
+- Unit tests verify function can be called and matchers work after setup
+- Files changed: src/setup-agent-eval.ts, src/setup-agent-eval.test.ts, src/index.ts
+- Verified: lint, typecheck, and all 80 tests pass
+- **Learnings for future iterations:**
+  - `setupAgentEval()` wraps `expect.extend()` for all custom matchers in one call
+  - Tests use inline `buildFakeJudge()` helper when test-helpers doesn't export one
+  - Matcher setup function exported from index.ts for consumer convenience
+---
