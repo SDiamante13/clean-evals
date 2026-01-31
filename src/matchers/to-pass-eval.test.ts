@@ -1,9 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { toPassEval } from './to-pass-eval.js';
 import type { JudgeProvider, JudgeResult } from '../judges/judge-provider.js';
 
 function buildFakeJudge(result: JudgeResult): JudgeProvider {
   return { judge: async () => result };
+}
+
+function buildFlakyJudge(scores: number[]): JudgeProvider {
+  let i = 0;
+  return {
+    judge: vi.fn().mockImplementation(async () => ({
+      score: scores[i++],
+      reasoning: `Call ${i}`,
+    })),
+  };
 }
 
 describe('toPassEval', () => {
@@ -78,5 +88,44 @@ describe('toPassEval', () => {
 
     expect(result.pass).toBe(false);
     expect(result.message()).toContain('0.8');
+  });
+});
+
+describe('toPassEval with samples', () => {
+  it('passes with flaky judge at k=3 (pass@k)', async () => {
+    const judge = buildFlakyJudge([0.3, 0.9, 0.4]);
+
+    const result = await toPassEval('output', {
+      rubric: 'Be correct',
+      judge,
+      samples: { count: 3 },
+    });
+
+    expect(result.pass).toBe(true);
+  });
+
+  it('fails with flaky judge at k=1 when first run fails', async () => {
+    const judge = buildFlakyJudge([0.3]);
+
+    const result = await toPassEval('output', {
+      rubric: 'Be correct',
+      judge,
+      samples: { count: 1 },
+    });
+
+    expect(result.pass).toBe(false);
+  });
+
+  it('reports aggregate stats in message', async () => {
+    const judge = buildFlakyJudge([0.3, 0.9, 0.5]);
+
+    const result = await toPassEval('output', {
+      rubric: 'Be correct',
+      judge,
+      samples: { count: 3 },
+    });
+
+    expect(result.message()).toContain('pass@3');
+    expect(result.message()).toContain('1/3 passed');
   });
 });

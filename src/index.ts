@@ -23,3 +23,5 @@ export type { EvaluateOutputOptions, OutputEvalResult } from './evaluate-output.
 export type { EvaluateHybridOptions, HybridEvalResult } from './evaluate-hybrid.js';
 export { JUDGE_SYSTEM_PROMPT } from './judges/system-prompt.js';
 export { parseJudgeResponse } from './judges/parse-judge-response.js';
+export { runWithSamples } from './run-with-samples.js';
+export type { SamplesConfig, SampledResult } from './run-with-samples.js';

@@ -1,11 +1,13 @@
 import type { ExpectedCall } from '../evaluate-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
+import type { SamplesConfig } from '../run-with-samples.js';
 
 interface TraceEvalOptions {
   passThreshold?: number;
   warnThreshold?: number;
   judge?: JudgeProvider;
   rubric?: string;
+  samples?: SamplesConfig;
 }
 
 interface PassEvalOptions {
@@ -13,6 +15,7 @@ interface PassEvalOptions {
   judge: JudgeProvider;
   passThreshold?: number;
   warnThreshold?: number;
+  samples?: SamplesConfig;
 }
 
 interface HybridEvalOptions {
@@ -22,6 +25,7 @@ interface HybridEvalOptions {
   judge: JudgeProvider;
   passThreshold?: number;
   warnThreshold?: number;
+  samples?: SamplesConfig;
 }
 
 declare module 'vitest' {

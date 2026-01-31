@@ -2,12 +2,15 @@ import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { evaluateTrace, ExpectedCall } from '../evaluate-trace.js';
 import { distillTrace } from '../distill-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
+import { runWithSamples, formatSampledMessage } from '../run-with-samples.js';
+import type { SamplesConfig } from '../run-with-samples.js';
 
 export interface TraceEvalOptions {
   passThreshold?: number;
   warnThreshold?: number;
   judge?: JudgeProvider;
   rubric?: string;
+  samples?: SamplesConfig;
 }
 
 interface MatcherResult {
@@ -27,10 +30,23 @@ export async function toPassTraceEval(
 ): Promise<MatcherResult> {
   const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
   const warnThreshold = options.warnThreshold ?? DEFAULT_WARN_THRESHOLD;
+
+  if (options.samples) {
+    return runSampled(spans, expected, options, passThreshold);
+  }
+
+  return runSingle(spans, expected, options, passThreshold, warnThreshold);
+}
+
+async function runSingle(
+  spans: ReadableSpan[],
+  expected: ExpectedCall[],
+  options: TraceEvalOptions,
+  passThreshold: number,
+  warnThreshold: number
+): Promise<MatcherResult> {
   const deterministicResult = evaluateTrace({ spans, expected });
-
   logWarningIfNeeded(deterministicResult.score, warnThreshold, passThreshold);
-
   const deterministicPass = deterministicResult.score >= passThreshold;
 
   if (!options.judge || !options.rubric) {
@@ -43,6 +59,30 @@ export async function toPassTraceEval(
   const judgePass = judgeResult.score >= passThreshold;
 
   return buildJudgeResult(judgePass, judgeResult.score, passThreshold, judgeResult.reasoning);
+}
+
+async function runSampled(
+  spans: ReadableSpan[],
+  expected: ExpectedCall[],
+  options: TraceEvalOptions,
+  passThreshold: number
+): Promise<MatcherResult> {
+  const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
+    const det = evaluateTrace({ spans, expected });
+    if (!options.judge || !options.rubric) {
+      return { pass: det.score >= passThreshold, score: det.score };
+    }
+    const story = distillTrace(spans);
+    const prompt = buildJudgePrompt(options.rubric, story);
+    const judgeResult = await options.judge.judge(prompt);
+    return { pass: judgeResult.score >= passThreshold, score: judgeResult.score };
+  };
+
+  const sampled = await runWithSamples(evalFn, options.samples!);
+  return {
+    pass: sampled.pass,
+    message: (): string => formatSampledMessage(sampled, sampled.pass),
+  };
 }
 
 function logWarningIfNeeded(score: number, warnThreshold: number, passThreshold: number): void {
