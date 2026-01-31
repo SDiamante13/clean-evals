@@ -17,10 +17,7 @@ interface MatcherResult {
   message: () => string;
 }
 
-export async function toPassHybridEval(
-  spans: ReadableSpan[],
-  options: HybridEvalOptions
-): Promise<MatcherResult> {
+export async function toPassHybridEval(spans: ReadableSpan[], options: HybridEvalOptions): Promise<MatcherResult> {
   const result = await evaluateHybrid({
     spans,
     expected: options.expected,
