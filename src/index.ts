@@ -28,3 +28,4 @@ export type { SamplesConfig, SampledResult } from './run-with-samples.js';
 export { setupAgentEval } from './setup-agent-eval.js';
 export { evaluateGuardrails, matchesRegex, matchesJsonSchema, containsNone } from './evaluate-guardrails.js';
 export type { Guardrail, GuardrailResult, GuardrailsEvalResult } from './evaluate-guardrails.js';
+export { toPassGuardrails } from './matchers/to-pass-guardrails.js';

@@ -3,6 +3,7 @@ import type { SampledResult } from '../run-with-samples.js';
 import type { ExpectedCall } from '../evaluate-trace.js';
 import type { JudgeProvider } from '../judges/judge-provider.js';
 import type { SamplesConfig } from '../run-with-samples.js';
+import type { Guardrail } from '../evaluate-guardrails.js';
 
 interface TraceEvalOptions {
   passThreshold?: number;
@@ -48,10 +49,12 @@ declare module 'vitest' {
     toPassTraceEval(expected: ExpectedCall[], options?: TraceEvalOptions): Promise<T>;
     toPassEval(options: PassEvalOptions): Promise<T>;
     toPassHybridEval(options: HybridEvalOptions): Promise<T>;
+    toPassGuardrails(guardrails: Guardrail[]): T;
   }
   interface AsymmetricMatchersContaining {
     toPassTraceEval(expected: ExpectedCall[], options?: TraceEvalOptions): void;
     toPassEval(options: PassEvalOptions): void;
     toPassHybridEval(options: HybridEvalOptions): void;
+    toPassGuardrails(guardrails: Guardrail[]): void;
   }
 }
