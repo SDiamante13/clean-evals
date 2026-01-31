@@ -4,6 +4,8 @@ import type { JudgeProvider } from '../judges/judge-provider.js';
 interface TraceEvalOptions {
   passThreshold?: number;
   warnThreshold?: number;
+  judge?: JudgeProvider;
+  rubric?: string;
 }
 
 interface PassEvalOptions {
@@ -15,7 +17,7 @@ interface PassEvalOptions {
 
 declare module 'vitest' {
   interface Assertion<T> {
-    toPassTraceEval(expected: ExpectedCall[], options?: TraceEvalOptions): T;
+    toPassTraceEval(expected: ExpectedCall[], options?: TraceEvalOptions): Promise<T>;
     toPassEval(options: PassEvalOptions): Promise<T>;
   }
   interface AsymmetricMatchersContaining {

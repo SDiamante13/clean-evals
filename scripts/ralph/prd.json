@@ -177,8 +177,8 @@
         "Tests pass"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented in prior commit (cbeaba1)"
     },
     {
       "id": "US-012",
@@ -192,7 +192,7 @@
         "Tests pass"
       ],
       "priority": 12,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {

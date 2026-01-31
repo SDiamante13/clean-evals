@@ -110,3 +110,26 @@
   - Matcher reasoning should be visible in both pass and fail message branches
   - Register all matchers in `src/matchers/register.ts` using `expect.extend({})`
 ---
+
+## 2026-01-31 - US-011
+- Already implemented in prior commit (cbeaba1)
+- `distillTrace(spans)` in `src/distill-trace.ts` converts spans to chronological narrative
+- Verified: lint, typecheck, and all 55 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - `distillTrace` filters for tool spans, sorts by start time, formats as numbered steps
+  - `buildToolSpan()` supports `result` and `startTimeMs` options for trace tests
+---
+
+## 2026-01-31 - US-012
+- Extended `toPassTraceEval` with optional `{ judge, rubric }` for LLM grading
+- When judge+rubric provided, distills trace and sends to judge with rubric prompt
+- Matcher is now async (returns `Promise<MatcherResult>`)
+- Added 4 new tests: prompt contains distilled story, fail on low score, reasoning in failure, skip judge without rubric
+- Files changed: src/matchers/to-pass-trace-eval.ts, src/matchers/to-pass-trace-eval.test.ts, src/matchers/types.ts
+- Verified: lint, typecheck, and all 59 tests pass
+- **Learnings for future iterations:**
+  - Converting sync matcher to async: change return type to `Promise<MatcherResult>` and update type declaration
+  - Judge prompt format for traces: `## Rubric\n{rubric}\n\n## Agent Trace\n{story}`
+  - Tests for async matchers use `await expect(...).rejects.toThrow()` pattern
+---
