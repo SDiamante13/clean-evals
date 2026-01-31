@@ -235,3 +235,17 @@
   - buildEvalOptions() helper constructs correct EvaluateOutputOptions from matcher options
   - Test file split to stay under 150-line limit (max-lines eslint rule)
 ---
+
+## 2026-01-31 - US-020
+- Already implemented in prior commit (ae382c7)
+- TraceEvalResult has firstFailureIndex and firstFailure fields
+- toPassTraceEval shows first failure prominently via formatFirstFailure()
+- HybridEvalResult surfaces firstFailureIndex and firstFailure from trace result
+- 4 unit tests: full match (null), first-step failure, mid-step failure, early-stop
+- Verified: lint, typecheck, and all 95 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - FirstFailure type exported from evaluate-trace.ts and reused in evaluate-hybrid.ts
+  - formatFirstFailure() in matcher formats as: "First failure at step N: expected X but got Y"
+  - actual is null when agent stopped early (fewer spans than expected)
+---

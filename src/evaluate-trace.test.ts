@@ -102,10 +102,7 @@ describe('evaluateTrace', () => {
     });
 
     it('returns mid-step failure index', () => {
-      const spans = [
-        buildToolSpan({ toolName: 'search' }),
-        buildToolSpan({ toolName: 'wrong_tool' }),
-      ];
+      const spans = [buildToolSpan({ toolName: 'search' }), buildToolSpan({ toolName: 'wrong_tool' })];
       const result = evaluateTrace({
         spans,
         expected: [{ toolName: 'search' }, { toolName: 'summarize' }, { toolName: 'write' }],
