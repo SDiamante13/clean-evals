@@ -182,3 +182,16 @@
   - Tests use inline `buildFakeJudge()` helper when test-helpers doesn't export one
   - Matcher setup function exported from index.ts for consumer convenience
 ---
+
+## 2026-01-31 - US-017
+- Exported `TraceEvalOptions` type from `src/index.ts`
+- All matcher option types now available for consumer import (`TraceEvalOptions`, `PassEvalOptions`, `HybridEvalOptions`)
+- Type augmentation for Vitest matchers via `export type {} from './matchers/types.js'`
+- Consumers can import `{ setupAgentEval, OpenAIJudgeProvider, TraceEvalOptions }` with full TypeScript autocomplete
+- Files changed: src/index.ts
+- Verified: lint, typecheck, and all 80 tests pass
+- **Learnings for future iterations:**
+  - Export option types from index.ts for consumer use (e.g., function parameter annotations)
+  - Empty type export (`export type {}`) re-exports module augmentations to consumers
+  - All judge providers, matchers, and utility functions already exported
+---

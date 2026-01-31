@@ -1,20 +1,21 @@
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
+import type { AttributeConvention } from '../find-tool-calls.js';
 
 interface SpanBuilderOptions {
   toolName?: string;
   args?: Record<string, unknown>;
-  attrPrefix?: 'tool' | 'gen_ai' | 'llm';
+  attributeConvention?: AttributeConvention;
   startTimeMs?: number;
   result?: string;
 }
 
 export function buildToolSpan(options: SpanBuilderOptions = {}): ReadableSpan {
-  const { toolName = 'test-tool', args, attrPrefix = 'tool', startTimeMs, result } = options;
+  const { toolName = 'test-tool', args, attributeConvention = 'tool', startTimeMs, result } = options;
   const attributes: Record<string, string> = {};
 
-  const nameKey = getNameKey(attrPrefix);
-  const argsKey = getArgsKey(attrPrefix);
+  const nameKey = getNameKey(attributeConvention);
+  const argsKey = getArgsKey(attributeConvention);
 
   attributes[nameKey] = toolName;
   if (args !== undefined) {
@@ -27,15 +28,15 @@ export function buildToolSpan(options: SpanBuilderOptions = {}): ReadableSpan {
   return createFakeSpan(attributes, startTimeMs);
 }
 
-function getNameKey(prefix: string): string {
-  if (prefix === 'gen_ai') return 'gen_ai.request.function_call.name';
-  if (prefix === 'llm') return 'llm.function_call.name';
+function getNameKey(convention: AttributeConvention): string {
+  if (convention === 'gen_ai') return 'gen_ai.request.function_call.name';
+  if (convention === 'llm') return 'llm.function_call.name';
   return 'tool.name';
 }
 
-function getArgsKey(prefix: string): string {
-  if (prefix === 'gen_ai') return 'gen_ai.request.function_call.arguments';
-  if (prefix === 'llm') return 'llm.function_call.arguments';
+function getArgsKey(convention: AttributeConvention): string {
+  if (convention === 'gen_ai') return 'gen_ai.request.function_call.arguments';
+  if (convention === 'llm') return 'llm.function_call.arguments';
   return 'tool.arguments';
 }
 

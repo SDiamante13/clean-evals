@@ -1,30 +1,58 @@
 import { ReadableSpan } from '@opentelemetry/sdk-trace-base';
 import { findToolCalls, ToolCall } from './find-tool-calls.js';
 
+/**
+ * A tool call that the agent is expected to have made.
+ * When {@link args} is omitted, only the tool name is matched.
+ */
 export interface ExpectedCall {
   toolName: string;
   args?: Record<string, unknown>;
 }
 
+/**
+ * Result of a deterministic trace evaluation.
+ *
+ * - `score` ranges from 0.0 (no matches) to 1.0 (all expected calls found).
+ * - `details` contains a per-expectation breakdown of matches and mismatches.
+ */
 export interface TraceEvalResult {
   pass: boolean;
   score: number;
   details: string[];
 }
 
+/**
+ * Deterministically evaluates agent behavior by comparing actual tool calls
+ * in OpenTelemetry spans against a list of expected calls.
+ *
+ * Score = (matched calls) / (expected calls). Pass requires a perfect 1.0.
+ *
+ * @example
+ * ```ts
+ * const result = evaluateTrace({
+ *   spans: exporter.getFinishedSpans(),
+ *   expected: [
+ *     { toolName: 'search', args: { query: 'weather' } },
+ *     { toolName: 'summarize' },
+ *   ],
+ * });
+ * // { pass: true, score: 1.0, details: ['✓ search matched', '✓ summarize matched'] }
+ * ```
+ */
 export function evaluateTrace(params: { spans: ReadableSpan[]; expected: ExpectedCall[] }): TraceEvalResult {
   const { spans, expected } = params;
   const actual = findToolCalls(spans);
   const details: string[] = [];
   let matched = 0;
 
-  for (const exp of expected) {
-    const match = findMatch(actual, exp);
+  for (const expectedCall of expected) {
+    const match = findMatch(actual, expectedCall);
     if (match) {
       matched++;
-      details.push(`✓ ${exp.toolName} matched`);
+      details.push(`✓ ${expectedCall.toolName} matched`);
     } else {
-      details.push(buildMismatchDetail(exp, actual));
+      details.push(buildMismatchDetail(expectedCall, actual));
     }
   }
 
@@ -53,10 +81,10 @@ function sortKeys(obj: Record<string, unknown>): Record<string, unknown> {
   return sorted;
 }
 
-function buildMismatchDetail(exp: ExpectedCall, actual: ToolCall[]): string {
-  const nameMatch = actual.find((c) => c.toolName === exp.toolName);
-  if (nameMatch && exp.args) {
-    return `✗ ${exp.toolName} found but args mismatch`;
+function buildMismatchDetail(expectedCall: ExpectedCall, actual: ToolCall[]): string {
+  const nameMatch = actual.find((call) => call.toolName === expectedCall.toolName);
+  if (nameMatch && expectedCall.args) {
+    return `✗ ${expectedCall.toolName} found but args mismatch`;
   }
-  return `✗ ${exp.toolName} not found`;
+  return `✗ ${expectedCall.toolName} not found`;
 }

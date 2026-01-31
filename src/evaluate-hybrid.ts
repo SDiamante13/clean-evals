@@ -21,6 +21,27 @@ export interface HybridEvalResult {
   skippedLlm: boolean;
 }
 
+/**
+ * Combines deterministic trace evaluation with LLM-judged output evaluation.
+ *
+ * Uses a fail-fast strategy: if the deterministic check fails, the LLM judge
+ * is never called, saving cost and latency. Only when the trace matches all
+ * expected tool calls does the LLM judge run to grade output quality.
+ *
+ * @example
+ * ```ts
+ * const result = await evaluateHybrid({
+ *   spans: exporter.getFinishedSpans(),
+ *   expected: [{ toolName: 'search' }],
+ *   output: agent.lastResponse,
+ *   rubric: 'Response is helpful and accurate.',
+ *   judge: new OpenAIJudgeProvider(),
+ * });
+ * if (result.skippedLlm) {
+ *   console.log('Deterministic check failed — LLM judge was not invoked');
+ * }
+ * ```
+ */
 export async function evaluateHybrid(options: EvaluateHybridOptions): Promise<HybridEvalResult> {
   const { spans, expected, output, rubric, judge, passThreshold, warnThreshold } = options;
 

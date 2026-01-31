@@ -2,6 +2,9 @@ export interface SamplesConfig {
   count: number;
 }
 
+/**
+ * Aggregated results from running an eval multiple times (pass@k).
+ */
 export interface SampledResult {
   pass: boolean;
   scores: number[];
@@ -11,6 +14,21 @@ export interface SampledResult {
   passCount: number;
 }
 
+/**
+ * Runs an eval function multiple times and aggregates results using pass@k semantics.
+ *
+ * Passes if at least one run passes. Reports min, max, and mean scores
+ * across all runs for reliability analysis.
+ *
+ * @example
+ * ```ts
+ * const sampled = await runWithSamples(
+ *   () => evaluateOutput({ output, rubric, judge }),
+ *   { count: 3 },
+ * );
+ * // sampled.pass === true if any of the 3 runs passed
+ * ```
+ */
 export async function runWithSamples(
   evalFn: () => Promise<{ pass: boolean; score: number }>,
   config: SamplesConfig
@@ -29,7 +47,7 @@ export async function runWithSamples(
     scores,
     min: Math.min(...scores),
     max: Math.max(...scores),
-    mean: scores.reduce((a, b) => a + b, 0) / scores.length,
+    mean: scores.reduce((sum, score) => sum + score, 0) / scores.length,
     passCount,
   };
 }

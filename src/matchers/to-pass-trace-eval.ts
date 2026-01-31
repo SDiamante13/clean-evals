@@ -68,9 +68,9 @@ async function runSampled(
   passThreshold: number
 ): Promise<MatcherResult> {
   const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
-    const det = evaluateTrace({ spans, expected });
+    const deterministicResult = evaluateTrace({ spans, expected });
     if (!options.judge || !options.rubric) {
-      return { pass: det.score >= passThreshold, score: det.score };
+      return { pass: deterministicResult.score >= passThreshold, score: deterministicResult.score };
     }
     const story = distillTrace(spans);
     const prompt = buildJudgePrompt(options.rubric, story);

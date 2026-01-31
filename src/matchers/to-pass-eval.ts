@@ -47,13 +47,13 @@ async function runSingle(output: string, options: PassEvalOptions, passThreshold
 
 async function runSampled(output: string, options: PassEvalOptions, passThreshold: number): Promise<MatcherResult> {
   const sampled = await runWithSamples(async () => {
-    const r = await evaluateOutput({
+    const result = await evaluateOutput({
       output,
       rubric: options.rubric,
       judge: options.judge,
       passThreshold,
     });
-    return { pass: r.pass, score: r.score };
+    return { pass: result.pass, score: result.score };
   }, options.samples!);
 
   return {

@@ -47,7 +47,7 @@ async function runSingle(spans: ReadableSpan[], options: HybridEvalOptions): Pro
 
 async function runSampled(spans: ReadableSpan[], options: HybridEvalOptions): Promise<MatcherResult> {
   const evalFn = async (): Promise<{ pass: boolean; score: number }> => {
-    const r = await evaluateHybrid({
+    const result = await evaluateHybrid({
       spans,
       expected: options.expected,
       output: options.output,
@@ -56,8 +56,8 @@ async function runSampled(spans: ReadableSpan[], options: HybridEvalOptions): Pr
       passThreshold: options.passThreshold,
       warnThreshold: options.warnThreshold,
     });
-    const score = r.llmResult ? r.llmResult.score : r.deterministicScore;
-    return { pass: r.pass, score };
+    const score = result.llmResult ? result.llmResult.score : result.deterministicScore;
+    return { pass: result.pass, score };
   };
 
   const sampled = await runWithSamples(evalFn, options.samples!);

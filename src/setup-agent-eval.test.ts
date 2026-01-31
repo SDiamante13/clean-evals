@@ -3,10 +3,7 @@ import { buildToolSpan } from './test-helpers/span-builder.js';
 import type { JudgeProvider } from './judges/judge-provider.js';
 import { setupAgentEval } from './setup-agent-eval.js';
 
-function buildFakeJudge(result: {
-  score: number;
-  reasoning: string;
-}): JudgeProvider {
+function buildFakeJudge(result: { score: number; reasoning: string }): JudgeProvider {
   return { judge: async () => result };
 }
 
