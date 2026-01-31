@@ -6,6 +6,8 @@ export type { ExpectedCall, TraceEvalResult } from './evaluate-trace.js';
 export { toPassTraceEval } from './matchers/to-pass-trace-eval.js';
 export { toPassEval } from './matchers/to-pass-eval.js';
 export type { PassEvalOptions } from './matchers/to-pass-eval.js';
+export { toPassHybridEval } from './matchers/to-pass-hybrid-eval.js';
+export type { HybridEvalOptions } from './matchers/to-pass-hybrid-eval.js';
 export type {} from './matchers/types.js';
 export type { JudgeProvider, JudgeResult } from './judges/judge-provider.js';
 export { OpenAIJudgeProvider } from './judges/openai-judge-provider.js';
