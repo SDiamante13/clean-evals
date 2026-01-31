@@ -263,3 +263,15 @@
   - matchesJsonSchema uses typeof checks against schema value strings (e.g., 'string', 'number')
   - containsNone uses Array.filter + String.includes for forbidden string detection
 ---
+
+## 2026-01-31 - US-022
+- toPassGuardrails matcher already implemented in prior commit (aef2232)
+- Matcher in src/matchers/to-pass-guardrails.ts, tests in to-pass-guardrails.test.ts
+- Registered in setupAgentEval(), type augmentation in types.ts, exported from index.ts
+- 5 tests covering pass, fail, per-guardrail results, boolean guardrails, negated assertion
+- Verified: lint, typecheck, and all 111 tests pass
+- Marked PRD as `passes: true`
+- **Learnings for future iterations:**
+  - Guardrail matcher is synchronous (no async needed) since guardrails are pure functions
+  - Matcher formats results as `PASS/FAIL name: reason` with indentation
+---
