@@ -23,18 +23,16 @@ export class OpenAIJudgeProvider implements JudgeProvider {
 
   async judge(prompt: string): Promise<JudgeResult> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const response: OpenAI.Chat.Completions.ChatCompletion =
-      await this.client.chat.completions.create({
-        model: this.model,
-        messages: [
-          { role: 'system', content: JUDGE_SYSTEM_PROMPT },
-          { role: 'user', content: prompt },
-        ],
-        temperature: 0,
-      });
+    const response: OpenAI.Chat.Completions.ChatCompletion = await this.client.chat.completions.create({
+      model: this.model,
+      messages: [
+        { role: 'system', content: JUDGE_SYSTEM_PROMPT },
+        { role: 'user', content: prompt },
+      ],
+      temperature: 0,
+    });
 
-    const content: string | null =
-      response.choices[0]?.message?.content ?? null;
+    const content: string | null = response.choices[0]?.message?.content ?? null;
     if (!content) {
       throw new Error('OpenAI returned empty response');
     }

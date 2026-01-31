@@ -50,9 +50,7 @@ describe('OpenAIJudgeProvider', () => {
       choices: [{ message: { content: null } }],
     });
 
-    await expect(provider.judge('test')).rejects.toThrow(
-      'OpenAI returned empty response',
-    );
+    await expect(provider.judge('test')).rejects.toThrow('OpenAI returned empty response');
   });
 
   it('throws on invalid JSON response', async () => {
